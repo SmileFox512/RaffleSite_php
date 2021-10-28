@@ -112,7 +112,7 @@ function accounts_idle() {
   $r = my_query("select count(*) from " . $db_prefix . "users u
   where u.last_visit<'$visit_limit' order by u.username");
 
-  list($pages_qty) = mysql_fetch_row($r);
+  list($pages_qty) = mysqli_fetch_row($r);
 
   if ($page == ceil($pages_qty / $page_limit)) {
     $limit = $pages_qty % $page_limit;
@@ -150,14 +150,14 @@ function accounts_idle() {
   <th width="24%" bgcolor="#dddddd" colspan="3">Options</th>
   </tr>
   <?php
-    while (list($id, $username, $name, $email, $city, $referrer_id, $paypal, $last_visit, $balance) = mysql_fetch_row($r)) {
+    while (list($id, $username, $name, $email, $city, $referrer_id, $paypal, $last_visit, $balance) = mysqli_fetch_row($r)) {
       $r3 = my_query("select * from " . $db_prefix . "closed_accounts where user_id='$id'");
-      if (mysql_num_rows($r3)) {
+      if (mysqli_num_rows($r3)) {
         continue;
       }
       if ($referrer_id) {
         $r1 = my_query("select username from " . $db_prefix . "users where id='$referrer_id'");
-        list($referrer_username) = mysql_fetch_row($r1);
+        list($referrer_username) = mysqli_fetch_row($r1);
       }
       else {
         $referrer_username = "None";
@@ -183,14 +183,14 @@ function accounts_idle() {
   <td>
   <?php
     $r2 = my_query("select count(*) from " . $db_prefix . "users where referrer_id='$id'");
-    list($qty) = mysql_fetch_row($r2);
+    list($qty) = mysqli_fetch_row($r2);
     echo $qty;
   ?>
   </td>
   <td>
   <?php
     $r3 = my_query("select sum(amount) from " . $db_prefix . "messages where user_id='$id'");
-    list($won) = mysql_fetch_row($r3);
+    list($won) = mysqli_fetch_row($r3);
     if ("" == $won) {
       $won = 0;
     }
@@ -234,7 +234,7 @@ function accounts_closed() {
   $r = my_query("select count(*)
   from " . $db_prefix . "closed_accounts c, " . $db_prefix . "users u
   where u.id=c.user_id order by u.username");
-  list($pages_qty) = mysql_fetch_row($r);
+  list($pages_qty) = mysqli_fetch_row($r);
 
   if ($page == ceil($pages_qty / $page_limit)) {
     $limit = $pages_qty % $page_limit;
@@ -257,7 +257,7 @@ function accounts_closed() {
   <th width="30%" bgcolor="#dddddd">Options</th>
   </tr>
   <?php
-    while (list($id,$user_id, $username) = mysql_fetch_row($r)) {
+    while (list($id,$user_id, $username) = mysqli_fetch_row($r)) {
   ?>
   <tr>
   <td><a href="flvby.php?go=userdetails&id=<?php echo $user_id; ?>"><?php echo $username; ?></a></td>
@@ -292,7 +292,7 @@ function accounts_close() {
     return(9);
   }
 
-  $r = my_query("insert into " . $db_prefix . "closed_accounts(user_id) values('" . mysql_real_escape_string($_GET['id']) . "')");
+  $r = my_query("insert into " . $db_prefix . "closed_accounts(user_id) values('" . mysqli_real_escape_string($_GET['id']) . "')");
 
   accounts_closed();
 
@@ -308,7 +308,7 @@ function accounts_reopen() {
     return(9);
   }
 
-  $r = my_query("delete from " . $db_prefix . "closed_accounts where id='" . mysql_real_escape_string($_GET['id']) . "'");
+  $r = my_query("delete from " . $db_prefix . "closed_accounts where id='" . mysqli_real_escape_string($_GET['id']) . "'");
 
   accounts_closed();
 
@@ -330,7 +330,7 @@ function frauds_list() {
   from " . $db_prefix . "users u, " . $db_prefix . "frauds f
   where u.id=f.user_id and f.incorrect <= f.correct
   order by u.username");
-  list($pages_qty) = mysql_fetch_row($r);
+  list($pages_qty) = mysqli_fetch_row($r);
 
   if ($page == ceil($pages_qty / $page_limit)) {
     $limit = $pages_qty % $page_limit;
@@ -364,7 +364,7 @@ function frauds_list() {
   <th width="10%" bgcolor="#dddddd">Options</th>
   </tr>
   <?php
-    while (list($id, $username, $name, $email, $city, $paypal, $reason, $incorrect, $correct, $balance) = mysql_fetch_row($r)) {
+    while (list($id, $username, $name, $email, $city, $paypal, $reason, $incorrect, $correct, $balance) = mysqli_fetch_row($r)) {
     if ("au" == $reason) {
       $correct = "&nbsp;";
       $incorrect = "&nbsp;";
@@ -384,14 +384,14 @@ function frauds_list() {
   <td>
   <?php
     $r2 = my_query("select count(*) from " . $db_prefix . "users where referrer_id='$id'");
-    list($qty) = mysql_fetch_row($r2);
+    list($qty) = mysqli_fetch_row($r2);
     echo $qty;
   ?>
   </td>
   <td>
   <?php
     $r3 = my_query("select sum(amount) from " . $db_prefix . "messages where user_id='$id'");
-    list($won) = mysql_fetch_row($r3);
+    list($won) = mysqli_fetch_row($r3);
     if ("" == $won) {
       $won = 0;
     }
@@ -433,7 +433,7 @@ function frauds_delete() {
     return(9);
   }
 
-  $r = my_query("delete from " . $db_prefix . "frauds where user_id='" . mysql_real_escape_string($_GET['id']) . "'");
+  $r = my_query("delete from " . $db_prefix . "frauds where user_id='" . mysqli_real_escape_string($_GET['id']) . "'");
 
   frauds_list();
 
@@ -445,7 +445,7 @@ function check_ticket_exist($user_id, $lottery_id) {
 
   $r = my_query("select id from " . $db_prefix . "tickets where user_id='$user_id' and lottery_id='$lottery_id'");
 
-  return(mysql_num_rows($r));
+  return(mysqli_num_rows($r));
 }
 
 function csv_show() {
@@ -454,7 +454,7 @@ echo "<p>";
   $r = my_query("select d.id, u.id, u.username, u.name, u.email ,u.paypal, sum(d.amount)
                  from " . $db_prefix . "users u, " . $db_prefix . "debts d
                  where d.user_id=u.id group by u.id");
-    while (list($id, $gag, $username, $name, $email ,$paypal, $amount) = mysql_fetch_row($r)) {
+    while (list($id, $gag, $username, $name, $email ,$paypal, $amount) = mysqli_fetch_row($r)) {
       echo "$paypal," . currency_display($amount) . "<br>";
     }
 echo '<p><div align="center"><div class="help">-This page displays the winners who need to be paid (users\' paypal, amount in $). This page is a very simplified version of (<em>Winner List</em>). It exists in case the Admin wants to create a program that will mass pay users. In order to delete a user the program will need to request this URL: <br /> "'.$PHP_SELF.'?go=deluser&paypal=UsersPayPal@site.com" </div></div>';
@@ -483,7 +483,7 @@ function debts_show() {
   <th width="10%" bgcolor="#dddddd">Options</th>
   </tr>
   <?php
-    while (list($id, $user_id, $username, $name, $email ,$paypal, $amount, $balance) = mysql_fetch_row($r)) {
+    while (list($id, $user_id, $username, $name, $email ,$paypal, $amount, $balance) = mysqli_fetch_row($r)) {
   ?>
   <tr>
   <td><a href="flvby.php?go=userdetails&id=<?php echo $user_id; ?>"><?php echo $username; ?></a></td>
@@ -493,14 +493,14 @@ function debts_show() {
   <td>
   <?php
     $r2 = my_query("select count(*) from " . $db_prefix . "users where referrer_id='$user_id'");
-    list($qty) = mysql_fetch_row($r2);
+    list($qty) = mysqli_fetch_row($r2);
     echo $qty;
   ?>
   </td>
   <td>
   <?php
     $r3 = my_query("select sum(amount) from " . $db_prefix . "messages where user_id='$user_id'");
-    list($won) = mysql_fetch_row($r3);
+    list($won) = mysqli_fetch_row($r3);
     if ("" == $won) {
       $won = 0;
     }
@@ -534,11 +534,11 @@ function debts_delete($id = 0) {
   }
 
   if (!$id) {
-    $r = my_query("delete from " . $db_prefix . "debts where user_id='" . mysql_real_escape_string($_GET['id']) . "'");
+    $r = my_query("delete from " . $db_prefix . "debts where user_id='" . mysqli_real_escape_string($_GET['id']) . "'");
     debts_show();
   }
   else {
-    $r = my_query("delete from " . $db_prefix . "debts where user_id='" . mysql_real_escape_string($id) . "'");
+    $r = my_query("delete from " . $db_prefix . "debts where user_id='" . mysqli_real_escape_string($id) . "'");
   }
 
   return(0);
@@ -560,65 +560,65 @@ function users_show() {
 
   if (isset($_POST['id']) && ($_POST['id'] != "")) {
     if ("" == $where_clause) {
-      $where_clause .= " where id='" . mysql_real_escape_string($_POST['id']) . "'";
+      $where_clause .= " where id='" . mysqli_real_escape_string($_POST['id']) . "'";
     }
     else {
-      $where_clause .= " and id='" . mysql_real_escape_string($_POST['id']) . "'";
+      $where_clause .= " and id='" . mysqli_real_escape_string($_POST['id']) . "'";
     }
   }
   if (isset($_POST['username']) && ($_POST['username'] != "")) {
     if ("" == $where_clause) {
-      $where_clause .= " where username like '" . mysql_real_escape_string(str_replace("*","%",$_POST['username'])) . "'";
+      $where_clause .= " where username like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['username'])) . "'";
     }
     else {
-      $where_clause .= " and username like '" . mysql_real_escape_string(str_replace("*","%",$_POST['username'])) . "'";
+      $where_clause .= " and username like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['username'])) . "'";
     }
   }
   if (isset($_POST['name']) && ($_POST['name'] != "")) {
     if ("" == $where_clause) {
-      $where_clause .= " where name like '" . mysql_real_escape_string(str_replace("*","%",$_POST['name'])) . "'";
+      $where_clause .= " where name like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['name'])) . "'";
     }
     else {
-      $where_clause .= " and name like '" . mysql_real_escape_string(str_replace("*","%",$_POST['name'])) . "'";
+      $where_clause .= " and name like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['name'])) . "'";
     }
   }
   if (isset($_POST['email']) && ($_POST['email'] != "")) {
     if ("" == $where_clause) {
-      $where_clause .= " where email like '" . mysql_real_escape_string(str_replace("*","%",$_POST['email'])) . "'";
+      $where_clause .= " where email like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['email'])) . "'";
     }
     else {
-      $where_clause .= " and email like '" . mysql_real_escape_string(str_replace("*","%",$_POST['email'])) . "'";
+      $where_clause .= " and email like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['email'])) . "'";
     }
   }
   if (isset($_POST['city']) && ($_POST['city'] != "")) {
     if ("" == $where_clause) {
-      $where_clause .= " where city like '" . mysql_real_escape_string(str_replace("*","%",$_POST['city'])) . "'";
+      $where_clause .= " where city like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['city'])) . "'";
     }
     else {
-      $where_clause .= " and city like '" . mysql_real_escape_string(str_replace("*","%",$_POST['city'])) . "'";
+      $where_clause .= " and city like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['city'])) . "'";
     }
   }
   if (isset($_POST['paypal']) && ($_POST['paypal'] != "")) {
     if ("" == $where_clause) {
-      $where_clause .= " where paypal like '" . mysql_real_escape_string(str_replace("*","%",$_POST['paypal'])) . "'";
+      $where_clause .= " where paypal like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['paypal'])) . "'";
     }
     else {
-      $where_clause .= " and paypal like '" . mysql_real_escape_string(str_replace("*","%",$_POST['paypal'])) . "'";
+      $where_clause .= " and paypal like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['paypal'])) . "'";
     }
   }
   if (isset($_POST['referrer']) && ($_POST['referrer'] != "")) {
-    $r = my_query("select id from " . $db_prefix . "users where username like '" . mysql_real_escape_string(str_replace("*","%",$_POST['referrer'])) . "'");
-    list($referrer_id) = mysql_fetch_row($r);
+    $r = my_query("select id from " . $db_prefix . "users where username like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['referrer'])) . "'");
+    list($referrer_id) = mysqli_fetch_row($r);
     if ("" == $where_clause) {
-      $where_clause .= " where referrer_id='" . mysql_real_escape_string($referrer_id) . "'";
+      $where_clause .= " where referrer_id='" . mysqli_real_escape_string($referrer_id) . "'";
     }
     else {
-      $where_clause .= " and referrer_id='" . mysql_real_escape_string($referrer_id) . "'";
+      $where_clause .= " and referrer_id='" . mysqli_real_escape_string($referrer_id) . "'";
     }
   }
 
   $r = my_query("select count(*) from " . $db_prefix . "users " . $where_clause . " order by username");
-  list($pages_qty) = mysql_fetch_row($r);
+  list($pages_qty) = mysqli_fetch_row($r);
 
   if ($page == ceil($pages_qty / $page_limit)) {
     $limit = $pages_qty % $page_limit;
@@ -674,10 +674,10 @@ function users_show() {
   <th width="16%" bgcolor="#dddddd" colspan="2">Options</th>
   </tr>
   <?php
-    while (list($id, $username, $name, $email, $city, $referrer_id, $paypal, $last_visit, $balance) = mysql_fetch_row($r)) {
+    while (list($id, $username, $name, $email, $city, $referrer_id, $paypal, $last_visit, $balance) = mysqli_fetch_row($r)) {
       if ($referrer_id) {
         $r1 = my_query("select username from " . $db_prefix . "users where id='$referrer_id'");
-        list($referrer_username) = mysql_fetch_row($r1);
+        list($referrer_username) = mysqli_fetch_row($r1);
       }
       else {
         $referrer_username = "None";
@@ -703,14 +703,14 @@ function users_show() {
   <td>
   <?php
     $r2 = my_query("select count(*) from " . $db_prefix . "users where referrer_id='$id'");
-    list($qty) = mysql_fetch_row($r2);
+    list($qty) = mysqli_fetch_row($r2);
     echo $qty;
   ?>
   </td>
   <td>
   <?php
     $r3 = my_query("select sum(amount) from " . $db_prefix . "messages where user_id='$id'");
-    list($won) = mysql_fetch_row($r3);
+    list($won) = mysqli_fetch_row($r3);
     if ("" == $won) {
       $won = 0;
     }
@@ -749,8 +749,8 @@ function users_delete() {
   global $db_prefix;
 
   if (isset($_GET['paypal'])) {
-    $r = my_query("select id from " . $db_prefix . "users where paypal='" . mysql_real_escape_string($_GET['paypal']) . "'");
-    list($id) = mysql_fetch_row($r);
+    $r = my_query("select id from " . $db_prefix . "users where paypal='" . mysqli_real_escape_string($_GET['paypal']) . "'");
+    list($id) = mysqli_fetch_row($r);
     debts_delete($id);
     return(0);
   }
@@ -762,7 +762,7 @@ function users_delete() {
   }
 
   if (isset($_GET['id'])) {
-    $r = my_query("delete from " . $db_prefix . "users where id='" . mysql_real_escape_string($_GET['id']) . "'");
+    $r = my_query("delete from " . $db_prefix . "users where id='" . mysqli_real_escape_string($_GET['id']) . "'");
 
     users_show();
   }
@@ -817,7 +817,7 @@ function users_suspend2() {
   }
 
   $r = my_query("select * from " . $db_prefix . "suspended where user_id='" . $_GET['id'] . "' and until > '" . time() . "'");
-  if (mysql_num_rows($r)) {
+  if (mysqli_num_rows($r)) {
     $r = my_query("update " . $db_prefix . "suspended
     set until='" . (time() + $_POST['duration']*24*3600) . "' where user_id='" . $_GET['id'] . "'");
   }
@@ -840,8 +840,8 @@ function users_unsuspend() {
     return(9);
   }
 
-//  $r = my_query("delete from " . $db_prefix . "suspended where user_id='" . mysql_real_escape_string($_GET['id']) . "'");
-  $r = my_query("update " . $db_prefix . "suspended set until='" . time() . "' where user_id='" . mysql_real_escape_string($_GET['id']) . "'");
+//  $r = my_query("delete from " . $db_prefix . "suspended where user_id='" . mysqli_real_escape_string($_GET['id']) . "'");
+  $r = my_query("update " . $db_prefix . "suspended set until='" . time() . "' where user_id='" . mysqli_real_escape_string($_GET['id']) . "'");
 
   suspended_show();
 
@@ -852,7 +852,7 @@ function users_deposit() {
   global $db_prefix;
 
   $r = my_query("select sum(balance) from " . $db_prefix . "users");
-  list($deposits) = mysql_fetch_row($r);
+  list($deposits) = mysqli_fetch_row($r);
   ?>
   <div align="center">
   <h1>User Deposits</h1>
@@ -877,11 +877,11 @@ function users_details() {
   $r = my_query("select ip,date,username, name, email, city, referrer_id, paypal, last_visit, balance, country,zip,gender,birthdate
   from " . $db_prefix . "users where id='$user_id'");
 
-  list($ip,$date,$username, $name, $email, $city, $referrer_id, $paypal, $last_visit, $balance,$country,$zip,$gender,$birthdate) = mysql_fetch_row($r);
+  list($ip,$date,$username, $name, $email, $city, $referrer_id, $paypal, $last_visit, $balance,$country,$zip,$gender,$birthdate) = mysqli_fetch_row($r);
 
   if ($referrer_id) {
     $r1 = my_query("select username from " . $db_prefix . "users where id='$referrer_id'");
-    list($referrer_username) = mysql_fetch_row($r1);
+    list($referrer_username) = mysqli_fetch_row($r1);
   }
   else {
     $referrer_username = "None";
@@ -986,7 +986,7 @@ function users_details() {
   <td width="50%" align="left" valign="top">
   <?php
     $r2 = my_query("select count(*) from " . $db_prefix . "users where referrer_id='$user_id'");
-    list($qty) = mysql_fetch_row($r2);
+    list($qty) = mysqli_fetch_row($r2);
     echo $qty;
   ?>
   </td>
@@ -998,7 +998,7 @@ function users_details() {
   <td width="50%" align="left" valign="top">
   <?php
     $r3 = my_query("select sum(amount) from " . $db_prefix . "messages where user_id='$user_id'");
-    list($won) = mysql_fetch_row($r3);
+    list($won) = mysqli_fetch_row($r3);
     if ("" == $won) {
       $won = 0;
     }
@@ -1021,7 +1021,7 @@ function users_details() {
   <td width="50%" align="left" valign="top">
   <?php
     $r3 = my_query("select sum(amount) from " . $db_prefix . "messages where user_id='$user_id' and mestype='w'");
-    list($won) = mysql_fetch_row($r3);
+    list($won) = mysqli_fetch_row($r3);
     if ("" == $won) {
       $won = 0;
     }
@@ -1036,7 +1036,7 @@ function users_details() {
   <td width="50%" align="left" valign="top">
   <?php
     $r3 = my_query("select sum(amount) from " . $db_prefix . "messages where user_id='$user_id' and mestype='r'");
-    list($won) = mysql_fetch_row($r3);
+    list($won) = mysqli_fetch_row($r3);
     if ("" == $won) {
       $won = 0;
     }
@@ -1064,7 +1064,7 @@ function users_details() {
 
   <?php
     $r = my_query("select started,until from " . $db_prefix . "suspended where user_id='$user_id'");
-    if (mysql_num_rows($r)) {
+    if (mysqli_num_rows($r)) {
   ?>
   <h2>Suspension Periods:</h2>
   <table width="400" border="1" cellspacing="0" cellpaddig="2">
@@ -1073,7 +1073,7 @@ function users_details() {
   <th width="200" bgcolor="#dddddd">Ended</th>
   </tr>
   <?php
-    while(list($started,$until) = mysql_fetch_row($r)) {
+    while(list($started,$until) = mysqli_fetch_row($r)) {
   ?>
   <tr>
   <td><?php echo date("Y-m-d H:i:s", $started) ?></td>
@@ -1110,7 +1110,7 @@ function suspended_show() {
   $r = my_query("select count(*)
   from " . $db_prefix . "suspended s, " . $db_prefix . "users u
   where u.id=s.user_id and (s.until > '" . time() . "' or s.until = '0') order by u.username");
-  list($pages_qty) = mysql_fetch_row($r);
+  list($pages_qty) = mysqli_fetch_row($r);
 
   if ($page == ceil($pages_qty / $page_limit)) {
     $limit = $pages_qty % $page_limit;
@@ -1134,7 +1134,7 @@ function suspended_show() {
   <th width="40%" bgcolor="#dddddd" colspan="2">Options</th>
   </tr>
   <?php
-    while (list($id,$username, $until) = mysql_fetch_row($r)) {
+    while (list($id,$username, $until) = mysqli_fetch_row($r)) {
   ?>
   <tr>
   <td><a href="flvby.php?go=userdetails&id=<?php echo $id; ?>"><?php echo $username; ?></a></td>
@@ -1174,10 +1174,10 @@ function fraud_checker() {
   $fraud_flag = false;
 
   $r1 = my_query("select distinct ip from " . $db_prefix . "users");
-  while (list($ipaddr) = mysql_fetch_row($r1)) {
+  while (list($ipaddr) = mysqli_fetch_row($r1)) {
     $query = "select id,username,name,email from " . $db_prefix . "users where ip='$ipaddr'";
     $r = my_query($query);
-    if (mysql_num_rows($r) < 2) {
+    if (mysqli_num_rows($r) < 2) {
       continue;
     }
     ?>
@@ -1190,7 +1190,7 @@ function fraud_checker() {
     <th width="30%" bgcolor="#dddddd">E-Mail</th>
     </tr>
     <?php
-          while(list($id,$username,$name,$email) = mysql_fetch_row($r)) {
+          while(list($id,$username,$name,$email) = mysqli_fetch_row($r)) {
     ?>
     <tr>
     <td><?php echo $id; ?></td>
@@ -1226,7 +1226,7 @@ function archive_show() {
   }
 
   $r = my_query("select count(*) from " . $db_prefix . "archive order by started desc");
-  list($pages_qty) = mysql_fetch_row($r);
+  list($pages_qty) = mysqli_fetch_row($r);
 
   if ($page == ceil($pages_qty / $page_limit)) {
     $limit = $pages_qty % $page_limit;
@@ -1249,7 +1249,7 @@ function archive_show() {
   <th width="20%" bgcolor="#dddddd">Winners</th>
   </tr>
   <?php
-    while (list($id, $lot_id, $amount, $started, $duration) = mysql_fetch_row($r)) {
+    while (list($id, $lot_id, $amount, $started, $duration) = mysqli_fetch_row($r)) {
   ?>
   <tr>
   <td align="center"><?php echo $lot_id; ?></td>
@@ -1288,7 +1288,7 @@ function finished_show() {
   }
 
   $r = my_query("select count(*) from " . $db_prefix . "lotteries l where l.ended>'0' order by l.started desc");
-  list($pages_qty) = mysql_fetch_row($r);
+  list($pages_qty) = mysqli_fetch_row($r);
 
   if ($page == ceil($pages_qty / $page_limit)) {
     $limit = $pages_qty % $page_limit;
@@ -1318,9 +1318,9 @@ function finished_show() {
   <th width="8%" bgcolor="#dddddd">Options</th>
   </tr>
   <?php
-    while (list($id, $started, $duration, $ticket_price, $win_percentage, $available) = mysql_fetch_row($r)) {
+    while (list($id, $started, $duration, $ticket_price, $win_percentage, $available) = mysqli_fetch_row($r)) {
     $r1 = my_query("select id from " . $db_prefix . "tickets where lottery_id='$id'");
-    $tickets_qty = mysql_num_rows($r1)
+    $tickets_qty = mysqli_num_rows($r1)
   ?>
   <tr>
   <td align="center"><?php echo $id; ?></td>
@@ -1381,9 +1381,9 @@ function lotteries_show() {
   <th width="16%" bgcolor="#dddddd" colspan="2">Finish Raffle </th>
   </tr>
   <?php
-    while (list($id, $started, $duration, $ticket_price, $win_percentage, $available) = mysql_fetch_row($r)) {
+    while (list($id, $started, $duration, $ticket_price, $win_percentage, $available) = mysqli_fetch_row($r)) {
     $r1 = my_query("select id from " . $db_prefix . "tickets where lottery_id='$id'");
-    $tickets_qty = mysql_num_rows($r1)
+    $tickets_qty = mysqli_num_rows($r1)
   ?>
   <tr>
   <td align="center"><?php echo $id; ?></td>
@@ -1489,7 +1489,7 @@ function lotteries_add() {
   '" . $_POST['duration'] . "',
   '" . $_POST['ticket_price'] . "',
   '" . $_POST['win_percentage'] . "',
-  '" . mysql_real_escape_string($_POST['description']) . "',
+  '" . mysqli_real_escape_string($_POST['description']) . "',
   '" . $_POST['available'] . "'
   )");
 
@@ -1507,7 +1507,7 @@ function lotteries_delete() {
     return(9);
   }
 
-  $r = my_query("delete from " . $db_prefix . "lotteries where id='" . mysql_real_escape_string($_GET['id']) . "'");
+  $r = my_query("delete from " . $db_prefix . "lotteries where id='" . mysqli_real_escape_string($_GET['id']) . "'");
 
   lotteries_show();
 
@@ -1528,10 +1528,10 @@ function lotteries_finish_randomly() {
   finish_lottery($_GET['id']);
 
   $r = my_query("select ticket_price,available from " . $db_prefix . "lotteries where id='" . $_GET['id'] . "'");
-  list($ticket_price,$available) = mysql_fetch_row($r);
+  list($ticket_price,$available) = mysqli_fetch_row($r);
 
   $r = my_query("select count(*) from " . $db_prefix . "tickets where lottery_id='" . $_GET['id'] . "'");
-  list($tickets) = mysql_fetch_row($r);
+  list($tickets) = mysqli_fetch_row($r);
 
   $profit = $ticket_price * $tickets - floor($ticket_price * $tickets * $available)/100;
 
@@ -1555,18 +1555,18 @@ function lotteries_finish_manually() {
 
   $id = $_GET['id'];
 
-    $r = mysql_query("select win_percentage, ticket_price from " . $db_prefix . "lotteries where id='$id'", $link);
-    list($win_percentage, $ticket_price) = mysql_fetch_row($r);
+    $r = my_query("select win_percentage, ticket_price from " . $db_prefix . "lotteries where id='$id'");
+    list($win_percentage, $ticket_price) = mysqli_fetch_row($r);
 
-    $r = mysql_query("select t.id, u.id, u.username from " . $db_prefix . "tickets t, " . $db_prefix . "users u
-                      where t.lottery_id='$id' and u.id=t.user_id", $link);
-    $players_qty = mysql_num_rows($r);
+    $r = my_query("select t.id, u.id, u.username from " . $db_prefix . "tickets t, " . $db_prefix . "users u
+                      where t.lottery_id='$id' and u.id=t.user_id");
+    $players_qty = mysqli_num_rows($r);
 
     $winners_qty = floor($players_qty * $win_percentage / 100);
 
     if (!$winners_qty) {
       if ($players_qty) $winners_qty = 1; else {
-        $r = mysql_query("update " . $db_prefix . "lotteries set ended='" . time() . "' where id='$id'", $link);
+        $r = my_query("update " . $db_prefix . "lotteries set ended='" . time() . "' where id='$id'");
         return(1);
       }
     }
@@ -1581,7 +1581,7 @@ function lotteries_finish_manually() {
   <table width="100%">
   <?php
 
-    while(list($ticket_id, $user_id, $username) = mysql_fetch_row($r)) {
+    while(list($ticket_id, $user_id, $username) = mysqli_fetch_row($r)) {
       ?>
   <tr>
   <td width="10%">
@@ -1618,17 +1618,17 @@ function lotteries_finish_manually2() {
 
   $id = $_GET['id'];
 
-    $r = mysql_query("select win_percentage, ticket_price from " . $db_prefix . "lotteries where id='$id'", $link);
-    list($win_percentage, $ticket_price) = mysql_fetch_row($r);
+    $r = my_query("select win_percentage, ticket_price from " . $db_prefix . "lotteries where id='$id'");
+    list($win_percentage, $ticket_price) = mysqli_fetch_row($r);
 
-    $r = mysql_query("select id from " . $db_prefix . "tickets where lottery_id='$id'", $link);
-    $players_qty = mysql_num_rows($r);
+    $r = my_query("select id from " . $db_prefix . "tickets where lottery_id='$id'");
+    $players_qty = mysqli_num_rows($r);
 
     $winners_qty = floor($players_qty * $win_percentage / 100);
 
     if (!$winners_qty) {
       if ($players_qty) $winners_qty = 1; else {
-        $r = mysql_query("update " . $db_prefix . "lotteries set ended='" . time() . "' where id='$id'", $link);
+        $r = my_query("update " . $db_prefix . "lotteries set ended='" . time() . "' where id='$id'");
         return(1);
       }
     }
@@ -1656,13 +1656,13 @@ function lotteries_finish_manually2() {
       winner($ticket_id, $winner_prize);
     }
 
-    $r = mysql_query("update " . $db_prefix . "lotteries set ended='" . time() . "' where id='$id'", $link);
+    $r = my_query("update " . $db_prefix . "lotteries set ended='" . time() . "' where id='$id'");
 
     $r = my_query("select ticket_price,available from " . $db_prefix . "lotteries where id='" . $_GET['id'] . "'");
-    list($ticket_price,$available) = mysql_fetch_row($r);
+    list($ticket_price,$available) = mysqli_fetch_row($r);
 
     $r = my_query("select count(*) from " . $db_prefix . "tickets where lottery_id='" . $_GET['id'] . "'");
-    list($tickets) = mysql_fetch_row($r);
+    list($tickets) = mysqli_fetch_row($r);
 
     $profit = $ticket_price * $tickets - floor($ticket_price * $tickets * $available)/100;
 
@@ -1686,17 +1686,17 @@ function lotteries_send_to_arc() {
   $id = $_GET['id'];
 
   $r = my_query("select started, duration, ticket_price,available from " . $db_prefix . "lotteries where id='$id'");
-  list($started, $duration, $ticket_price, $available) = mysql_fetch_row($r);
+  list($started, $duration, $ticket_price, $available) = mysqli_fetch_row($r);
 
   $r = my_query("select id from " . $db_prefix . "tickets where lottery_id='$id'");
-  list($tickets_qty) = mysql_fetch_row($r);
+  list($tickets_qty) = mysqli_fetch_row($r);
 
   $amount = $ticket_price * $tickets_qty * $available / 100;
 
   $r = my_query("insert into " . $db_prefix . "archive(lot_id,amount,started,duration)
                  values('$id', '$amount', '$started', '$duration')");
 
-  $r = my_query("delete from " . $db_prefix . "lotteries where id='" . mysql_real_escape_string($id) . "'");
+  $r = my_query("delete from " . $db_prefix . "lotteries where id='" . mysqli_real_escape_string($id) . "'");
 
   finished_show();
 
@@ -1728,10 +1728,10 @@ function winners_show() {
   <th width="15%" bgcolor="#dddddd">PayPal</th>
   </tr>
   <?php
-    while (list($id, $username, $name, $email, $city, $referrer_id, $paypal) = mysql_fetch_row($r)) {
+    while (list($id, $username, $name, $email, $city, $referrer_id, $paypal) = mysqli_fetch_row($r)) {
       if ($referrer_id) {
         $r1 = my_query("select username from " . $db_prefix . "users where id='$referrer_id'");
-        list($referrer_username) = mysql_fetch_row($r1);
+        list($referrer_username) = mysqli_fetch_row($r1);
       }
       else {
         $referrer_username = "None";
@@ -1791,11 +1791,11 @@ function paypal_parser() {
       }
 
       $r = my_query("select id from " . $db_prefix . "users where paypal='$email'");
-      if (!mysql_num_rows($r)) {
+      if (!mysqli_num_rows($r)) {
         array_push($failed, "0,$name,$email,Invalid paypal email");
         continue;
       }
-      list($user_id) = mysql_fetch_row($r);
+      list($user_id) = mysqli_fetch_row($r);
 
 /*      if ((!is_numeric($lottery_id)) || ($lottery_id > 999999999) || (check_12hours_limit($lottery_id,$date))) {
         $r = my_query("insert into " . $db_prefix . "frauds(user_id,reason) values('$user_id','au')");
@@ -1805,13 +1805,13 @@ function paypal_parser() {
 */
 /*
       $r = my_query("select ticket_price from " . $db_prefix . "lotteries where id='$lottery_id' and ended='0'");
-      if (!mysql_num_rows($r)) {
+      if (!mysqli_num_rows($r)) {
         $r = my_query("insert into " . $db_prefix . "frauds(user_id, reason) values('$user_id', 'au')");
         array_push($failed, "$user_id,$name,$email,Invalid auction ID");
         continue;
       }
 */
-//      list($ticket_price) = mysql_fetch_row($r);
+//      list($ticket_price) = mysqli_fetch_row($r);
 
 /*      if ($ticket_price != $amount) {
         if ($ticket_price > $amount) {
@@ -1832,7 +1832,7 @@ function paypal_parser() {
 */
 //      $r = my_query("insert into " . $db_prefix ."tickets(user_id, lottery_id, price) values('$user_id','$lottery_id','$ticket_price')");
 
-      $r = my_query("update " . $db_prefix . "users set balance=balance+'" . mysql_real_escape_string($amount) . "' where id='$user_id'");
+      $r = my_query("update " . $db_prefix . "users set balance=balance+'" . mysqli_real_escape_string($amount) . "' where id='$user_id'");
 
       array_push($success, $user_id);
       array_push($credited, $amount);
@@ -1860,13 +1860,13 @@ function paypal_parser() {
         $r = my_query("select username, name, email, city, referrer_id, paypal, last_visit, balance
         from " . $db_prefix . "users where id='" . $success[$i] . "'");
         $id = $success[$i];
-        list($username, $name, $email, $city, $referrer_id, $paypal, $last_visit, $balance) = mysql_fetch_row($r);
+        list($username, $name, $email, $city, $referrer_id, $paypal, $last_visit, $balance) = mysqli_fetch_row($r);
         if (!$referrer_id) {
           $referrer_username = "None";
         }
         else {
           $r = my_query("select username from " . $db_prefix . "users where id='$referrer_id'");
-          list($referrer_username) = mysql_fetch_row($r);
+          list($referrer_username) = mysqli_fetch_row($r);
         }
       ?>
       <tr>
@@ -1889,14 +1889,14 @@ function paypal_parser() {
   <td>
   <?php
     $r2 = my_query("select count(*) from " . $db_prefix . "users where referrer_id='$id'");
-    list($qty) = mysql_fetch_row($r2);
+    list($qty) = mysqli_fetch_row($r2);
     echo $qty;
   ?>
   </td>
   <td>
   <?php
     $r3 = my_query("select sum(amount) from " . $db_prefix . "messages where user_id='$id'");
-    list($won) = mysql_fetch_row($r3);
+    list($won) = mysqli_fetch_row($r3);
     if ("" == $won) {
       $won = 0;
     }
@@ -1952,14 +1952,14 @@ function paypal_parser() {
         else {
           $r = my_query("select username, name, email, city, referrer_id, paypal, last_visit
           from " . $db_prefix . "users where id='" . $id . "'");
-          list($username, $name, $email, $city, $referrer_id, $paypal, $last_visit) = mysql_fetch_row($r);
+          list($username, $name, $email, $city, $referrer_id, $paypal, $last_visit) = mysqli_fetch_row($r);
         }
         if (!$referrer_id) {
           $referrer_username = "None";
         }
         else {
           $r = my_query("select username from " . $db_prefix . "users where id='$referrer_id'");
-          list($referrer_username) = mysql_fetch_row($r);
+          list($referrer_username) = mysqli_fetch_row($r);
         }
 
       ?>
@@ -1983,14 +1983,14 @@ function paypal_parser() {
   <td>
   <?php
     $r2 = my_query("select count(*) from " . $db_prefix . "users where referrer_id='$user_id'");
-    list($qty) = mysql_fetch_row($r2);
+    list($qty) = mysqli_fetch_row($r2);
     echo $qty;
   ?>
   </td>
   <td>
   <?php
     $r3 = my_query("select sum(amount) from " . $db_prefix . "messages where user_id='$user_id'");
-    list($won) = mysql_fetch_row($r3);
+    list($won) = mysqli_fetch_row($r3);
     if ("" == $won) {
       $won = 0;
     }
@@ -2070,9 +2070,9 @@ function tickets_show() {
   <th width="15%" bgcolor="#dddddd">Options</th>
   </tr>
   <?php
-    while (list($ticket_id, $username, $id, $started, $duration, $ticket_price) = mysql_fetch_row($r)) {
+    while (list($ticket_id, $username, $id, $started, $duration, $ticket_price) = mysqli_fetch_row($r)) {
       $r1 = my_query("select id from " . $db_prefix . "tickets where lottery_id='$id'");
-      $tickets_qty = mysql_num_rows($r1);
+      $tickets_qty = mysqli_num_rows($r1);
       $amount = $tickets_qty * $ticket_price;
   ?>
   <tr>
@@ -2107,13 +2107,13 @@ function tickets_add() {
   <form action="flvby.php?go=tickets2" method="post">
   Username:
   <select name="user_id">
-  <?php while (list($id,$username) = mysql_fetch_row($r)) { ?>
+  <?php while (list($id,$username) = mysqli_fetch_row($r)) { ?>
   <option value="<?php echo $id; ?>"><?php echo $username ?>
   <?php } ?>
   </select>
   Raffle ID:
   <select name="lottery_id">
-  <?php while (list($id) = mysql_fetch_row($r1)) { ?>
+  <?php while (list($id) = mysqli_fetch_row($r1)) { ?>
   <option value="<?php echo $id; ?>"><?php echo $id ?>
   <?php } ?>
   </select>
@@ -2133,14 +2133,14 @@ function tickets_add2() {
   $user_id = $_POST['user_id'];
 
   $r = my_query("select id from " . $db_prefix . "tickets where user_id='$user_id' and lottery_id='$lottery_id'");
-  if (mysql_num_rows($r)) {
+  if (mysqli_num_rows($r)) {
     error_report(16);
     tickets_add();
     return(16);
   }
 
   $r = my_query("select ticket_price from " . $db_prefix . "lotteries where id='$lottery_id'");
-  list($ticket_price) = mysql_fetch_row($r);
+  list($ticket_price) = mysqli_fetch_row($r);
 
   $r = my_query("insert into " . $db_prefix . "tickets(user_id, lottery_id, price,date) values('$user_id', '$lottery_id', '$ticket_price','" . time() . "')");
 
@@ -2158,7 +2158,7 @@ function tickets_delete() {
     return(9);
   }
 
-  $r = my_query("delete from " . $db_prefix . "tickets where id='" . mysql_real_escape_string($_GET['id']) . "'");
+  $r = my_query("delete from " . $db_prefix . "tickets where id='" . mysqli_real_escape_string($_GET['id']) . "'");
 
   tickets_show();
 
@@ -2178,7 +2178,7 @@ function fictitious_show() {
 
   $r = my_query("select count(*) from " . $db_prefix . "fictitious f, " . $db_prefix . "users u
   where u.id=f.user_id order by f.id desc");
-  list($pages_qty) = mysql_fetch_row($r);
+  list($pages_qty) = mysqli_fetch_row($r);
 
   if ($page == ceil($pages_qty / $page_limit)) {
     $limit = $pages_qty % $page_limit;
@@ -2206,10 +2206,10 @@ function fictitious_show() {
   <th width="10%" bgcolor="#dddddd">Options</th>
   </tr>
   <?php
-    while (list($id, $user_id, $real_username, $username, $name, $email, $city, $referrer_id, $paypal) = mysql_fetch_row($r)) {
+    while (list($id, $user_id, $real_username, $username, $name, $email, $city, $referrer_id, $paypal) = mysqli_fetch_row($r)) {
       if ($referrer_id) {
         $r1 = my_query("select username from " . $db_prefix . "users where id='$referrer_id'");
-        list($referrer_username) = mysql_fetch_row($r1);
+        list($referrer_username) = mysqli_fetch_row($r1);
       }
       else {
         $referrer_username = "None";
@@ -2253,7 +2253,7 @@ function fictitious_delete() {
     return(9);
   }
 
-  $r = my_query("delete from " . $db_prefix . "fictitious where user_id='" . mysql_real_escape_string($_GET['id']) . "'");
+  $r = my_query("delete from " . $db_prefix . "fictitious where user_id='" . mysqli_real_escape_string($_GET['id']) . "'");
 
   fictitious_show();
 
@@ -2272,7 +2272,7 @@ function profits_show() {
   }
 
   $r = my_query("select count(*) from " . $db_prefix . "profits  order by date desc");
-  list($pages_qty) = mysql_fetch_row($r);
+  list($pages_qty) = mysqli_fetch_row($r);
 
   if ($page == ceil($pages_qty / $page_limit)) {
     $limit = $pages_qty % $page_limit;
@@ -2286,7 +2286,7 @@ function profits_show() {
   <div align="right">
   <?php
     $r = my_query("select sum(amount) from " . $db_prefix . "profits where paid='n'");
-    list($amount) = mysql_fetch_row($r);
+    list($amount) = mysqli_fetch_row($r);
   ?>
   <b>Total Amount: $<?php echo currency_display($amount); ?></b>
   </div>
@@ -2304,7 +2304,7 @@ function profits_show() {
   <th width="20%" bgcolor="#dddddd">Options</th>
   </tr>
   <?php
-    while (list($id,$date,$amount,$paid) = mysql_fetch_row($r)) {
+    while (list($id,$date,$amount,$paid) = mysqli_fetch_row($r)) {
   ?>
   <?php
     if ('n' == $paid) {
@@ -2357,7 +2357,7 @@ function profits_accept() {
     return(9);
   }
 
-  $r = my_query("update " . $db_prefix . "profits set paid='y' where id='" . mysql_real_escape_string($_GET['id']) . "'");
+  $r = my_query("update " . $db_prefix . "profits set paid='y' where id='" . mysqli_real_escape_string($_GET['id']) . "'");
 
   profits_show();
 
@@ -2378,11 +2378,11 @@ function questions_show() {
   <div align="right">
   <?php
     $r = my_query("select id,name from " . $db_prefix . "support_categories");
-    list($categ_id, $categ_name) = mysql_fetch_row($r);
+    list($categ_id, $categ_name) = mysqli_fetch_row($r);
   ?>
   <a href="flvby.php?go=support&category=<?php echo $categ_id; ?>"><?php echo $categ_name ?></a>
   <?php
-    while (list($categ_id, $categ_name) = mysql_fetch_row($r)) {
+    while (list($categ_id, $categ_name) = mysqli_fetch_row($r)) {
   ?>
   &nbsp;-&nbsp;<a href="flvby.php?go=support&category=<?php echo $categ_id; ?>"><?php echo $categ_name ?></a>
   <?php
@@ -2393,8 +2393,8 @@ function questions_show() {
   <h1>Open Tickets</h1>
   <h2>
   <?php
-    $r = my_query("select name from " . $db_prefix . "support_categories where id='" . mysql_real_escape_string($category) . "'");
-    list($header) = mysql_fetch_row($r);
+    $r = my_query("select name from " . $db_prefix . "support_categories where id='" . mysqli_real_escape_string($category) . "'");
+    list($header) = mysqli_fetch_row($r);
     echo $header;
   ?>
   </h2>
@@ -2410,8 +2410,8 @@ function questions_show() {
   $r = my_query("select s.id, s.user_id, u.username, s.date, s.status, s.subject, s.category
   from " . $db_prefix . "support s, " . $db_prefix . "users u
   where s.status='o' and s.category='" . $category . "' and s.user_id=u.id order by date desc");
-  if (mysql_num_rows($r)) {
-    while (list($id, $user_id,$username, $date, $status, $subject, $category) = mysql_fetch_row($r)) {
+  if (mysqli_num_rows($r)) {
+    while (list($id, $user_id,$username, $date, $status, $subject, $category) = mysqli_fetch_row($r)) {
   ?>
   <tr>
   <td align="center"><?php echo date("m-d-Y", $date); ?></td>
@@ -2454,7 +2454,7 @@ function questions_categories_show() {
   <th width="20%" bgcolor="#dddddd">Options</th>
   </tr>
   <?php
-    while (list($id, $name) = mysql_fetch_row($r)) {
+    while (list($id, $name) = mysqli_fetch_row($r)) {
   ?>
   <tr>
   <td><?php echo $name; ?></td>
@@ -2497,7 +2497,7 @@ function questions_view() {
   $r = my_query("select status,subject,message from " . $db_prefix . "support
   where id='" . $_GET['id'] . "'");
 
-  if (!(list($status,$subject,$message) = mysql_fetch_row($r))) {
+  if (!(list($status,$subject,$message) = mysqli_fetch_row($r))) {
     return(1);
   }
 
@@ -2523,10 +2523,10 @@ function questions_view() {
   <th width="20%" bgcolor="#dddddd" colspan="2">Options</th>
   </tr>
   <?php
-    while (list($id, $username, $name, $email, $city, $referrer_id, $paypal, $last_visit, $balance) = mysql_fetch_row($r)) {
+    while (list($id, $username, $name, $email, $city, $referrer_id, $paypal, $last_visit, $balance) = mysqli_fetch_row($r)) {
       if ($referrer_id) {
         $r1 = my_query("select username from " . $db_prefix . "users where id='$referrer_id'");
-        list($referrer_username) = mysql_fetch_row($r1);
+        list($referrer_username) = mysqli_fetch_row($r1);
       }
       else {
         $referrer_username = "None";
@@ -2542,14 +2542,14 @@ function questions_view() {
   <td>
   <?php
     $r2 = my_query("select count(*) from " . $db_prefix . "users where referrer_id='$id'");
-    list($qty) = mysql_fetch_row($r2);
+    list($qty) = mysqli_fetch_row($r2);
     echo $qty;
   ?>
   </td>
   <td>
   <?php
     $r3 = my_query("select sum(amount) from " . $db_prefix . "messages where user_id='$id'");
-    list($won) = mysql_fetch_row($r3);
+    list($won) = mysqli_fetch_row($r3);
     if ("" == $won) {
       $won = 0;
     }
@@ -2629,8 +2629,8 @@ function questions_answer() {
   }
 
   $r = my_query("update " . $db_prefix . "support set status='r',
-  answer='" . mysql_real_escape_string($_POST['answer']) . "',
-  message='" . mysql_real_escape_string($_POST['question']) . "'
+  answer='" . mysqli_real_escape_string($_POST['answer']) . "',
+  message='" . mysqli_real_escape_string($_POST['question']) . "'
   where id='" . $_GET['id'] . "'");
 
   questions_show();
@@ -2741,15 +2741,15 @@ function credit_accounts2() {
   }
 
   $r = my_query("select id from " . $db_prefix . "users
-  where username='" . mysql_real_escape_string($_POST['username']) . "'
-  or paypal='" . mysql_real_escape_string($_POST['paypal']) . "'");
+  where username='" . mysqli_real_escape_string($_POST['username']) . "'
+  or paypal='" . mysqli_real_escape_string($_POST['paypal']) . "'");
 
-  if (!mysql_num_rows($r)) {
+  if (!mysqli_num_rows($r)) {
     error_report(23);
     return(23);
   }
 
-  list($user_id) = mysql_fetch_row($r);
+  list($user_id) = mysqli_fetch_row($r);
 
   $r = my_query("update " . $db_prefix . "users set balance=balance+'" . $_POST['amount'] . "'
   where id='" . $user_id . "'");
@@ -2776,10 +2776,10 @@ function credit_accounts2() {
   <th width="20%" bgcolor="#dddddd" colspan="2">Options</th>
   </tr>
   <?php
-    while (list($id, $username, $name, $email, $city, $referrer_id, $paypal, $last_visit, $balance) = mysql_fetch_row($r)) {
+    while (list($id, $username, $name, $email, $city, $referrer_id, $paypal, $last_visit, $balance) = mysqli_fetch_row($r)) {
       if ($referrer_id) {
         $r1 = my_query("select username from " . $db_prefix . "users where id='$referrer_id'");
-        list($referrer_username) = mysql_fetch_row($r1);
+        list($referrer_username) = mysqli_fetch_row($r1);
       }
       else {
         $referrer_username = "None";
@@ -2795,14 +2795,14 @@ function credit_accounts2() {
   <td>
   <?php
     $r2 = my_query("select count(*) from " . $db_prefix . "users where referrer_id='$id'");
-    list($qty) = mysql_fetch_row($r2);
+    list($qty) = mysqli_fetch_row($r2);
     echo $qty;
   ?>
   </td>
   <td>
   <?php
     $r3 = my_query("select sum(amount) from " . $db_prefix . "messages where user_id='$id'");
-    list($won) = mysql_fetch_row($r3);
+    list($won) = mysqli_fetch_row($r3);
     if ("" == $won) {
       $won = 0;
     }
@@ -2843,7 +2843,7 @@ function image_verifications() {
       return(9);
     }
 
-    $r = my_query("update " . $db_prefix . "image_verifications set status='" . mysql_real_escape_string($_GET['value']) . "'
+    $r = my_query("update " . $db_prefix . "image_verifications set status='" . mysqli_real_escape_string($_GET['value']) . "'
     where id='" . $_GET['id'] . "'");
   }
 
@@ -2860,7 +2860,7 @@ function image_verifications() {
   </tr>
   <?php
     $r = my_query("select id,pagename, status from " . $db_prefix . "image_verifications");
-    while (list($id,$pagename, $status) = mysql_fetch_row($r)) {
+    while (list($id,$pagename, $status) = mysqli_fetch_row($r)) {
   ?>
   <tr>
   <td><?php echo strtoupper($pagename); ?></td>
@@ -2904,7 +2904,7 @@ function stats_show() {
   <td width="50%" align="left" valign="top">
   <?php
     $r = my_query("select count(*) from " . $db_prefix . "users");
-    list($qty) = mysql_fetch_row($r);
+    list($qty) = mysqli_fetch_row($r);
     echo $qty;
   ?>
   </td>
@@ -2916,7 +2916,7 @@ function stats_show() {
   <td width="50%" align="left" valign="top">
   <?php
     $r = my_query("select count(*) from " . $db_prefix . "users where referrer_id>'0'");
-    list($qty) = mysql_fetch_row($r);
+    list($qty) = mysqli_fetch_row($r);
     echo $qty;
   ?>
   </td>
@@ -2928,7 +2928,7 @@ function stats_show() {
   <td width="50%" align="left" valign="top">
   <?php
     $r = my_query("select count(*) from " . $db_prefix . "users where referrer_id='0'");
-    list($qty) = mysql_fetch_row($r);
+    list($qty) = mysqli_fetch_row($r);
     echo $qty;
   ?>
   </td>
@@ -2940,7 +2940,7 @@ function stats_show() {
   <td width="50%" align="left" valign="top">
   <?php
     $r = my_query("select count(*) from " . $db_prefix . "users where signup_date>'" . (time() - 24*60*60) . "'");
-    list($qty) = mysql_fetch_row($r);
+    list($qty) = mysqli_fetch_row($r);
     echo $qty;
   ?>
   </td>
@@ -2952,7 +2952,7 @@ function stats_show() {
   <td width="50%" align="left" valign="top">
   <?php
     $r = my_query("select count(*) from " . $db_prefix . "support where status='o'");
-    list($qty) = mysql_fetch_row($r);
+    list($qty) = mysqli_fetch_row($r);
     echo $qty;
   ?>
   </td>
@@ -2965,7 +2965,7 @@ function stats_show() {
   <?php
     $r = my_query("select count(*) from " . $db_prefix . "support
     where date>'" . (time() - 24*60*60) . "' and status='o'");
-    list($qty) = mysql_fetch_row($r);
+    list($qty) = mysqli_fetch_row($r);
     echo $qty;
   ?>
   </td>
@@ -2977,7 +2977,7 @@ function stats_show() {
   <?php
     $r = my_query("select count(*) from " . $db_prefix . "lotteries
     where started < '" . (time() + 24*60*60) . "' - duration*24*60*60 and ended='0'");
-    list($qty) = mysql_fetch_row($r);
+    list($qty) = mysqli_fetch_row($r);
     echo $qty;
   ?>
   </td>
@@ -2989,7 +2989,7 @@ function stats_show() {
   <td width="50%" align="left" valign="top">
   <?php
     $r = my_query("select distinct ip from " . $db_prefix . "visits where date > '" . (time() - 24*60*60) . "'");
-    echo mysql_num_rows($r);
+    echo mysqli_num_rows($r);
   ?>
   </td>
   </tr>
@@ -3001,7 +3001,7 @@ function stats_show() {
   <td width="50%" align="left" valign="top">
   <?php
     $r = my_query("select count(*) from " . $db_prefix . "tickets where date > '" . (time() - 24*60*60) . "'");
-    list($qty) = mysql_fetch_row($r);
+    list($qty) = mysqli_fetch_row($r);
     echo $qty;
   ?>
   </td>
@@ -3013,7 +3013,7 @@ function stats_show() {
   <td width="50%" align="left" valign="top">
   <?php
     $r = my_query("select count(*) from " . $db_prefix . "users where last_visit > '" . (time() - 24*60*60) . "'");
-    list($qty) = mysql_fetch_row($r);
+    list($qty) = mysqli_fetch_row($r);
     echo $qty;
   ?>
   </td>
@@ -3036,10 +3036,10 @@ function faq_add() {
   $search_line = str_replace("  ", " ", $search_line);
 
   $r = my_query("insert into " . $db_prefix . "faq(question,answer,date, search) values(
-  '" . mysql_real_escape_string($_POST['question']) . "',
-  '" . mysql_real_escape_string($_POST['answer']) . "',
+  '" . mysqli_real_escape_string($_POST['question']) . "',
+  '" . mysqli_real_escape_string($_POST['answer']) . "',
   '" . time() . "',
-  '" . mysql_real_escape_string($search_line) . "')");
+  '" . mysqli_real_escape_string($search_line) . "')");
 
   if (isset($_POST['support'])) {
     questions_answer();
@@ -3063,7 +3063,7 @@ function faq_show() {
   }
 
   $r = my_query("select count(*) from " . $db_prefix . "faq");
-  list($pages_qty) = mysql_fetch_row($r);
+  list($pages_qty) = mysqli_fetch_row($r);
 
   if ($page == ceil($pages_qty / $page_limit)) {
     $limit = $pages_qty % $page_limit;
@@ -3082,7 +3082,7 @@ function faq_show() {
   </div>
   <div align="left">
   <?php
-    while (list($id,$question,$answer) = mysql_fetch_row($r)) {
+    while (list($id,$question,$answer) = mysqli_fetch_row($r)) {
       ?>
       <b>Question:</b><?php echo nl2br($question); ?> <a href="flvby.php?go=delfaq&amp;id=<?=$id?>">(Delete)</a><br>
       <b>Answer:</b><?php echo nl2br($answer); ?><br><br>
@@ -3337,7 +3337,7 @@ if (isset($_GET['go'])) {
   }
   //delete faq
     if ('delfaq' == $go) {
-	$r = my_query("delete from " . $db_prefix . "faq where id='" . mysql_real_escape_string($_GET['id']) . "'");
+	$r = my_query("delete from " . $db_prefix . "faq where id='" . mysqli_real_escape_string($_GET['id']) . "'");
 	
     faq_show();
     return(1);

@@ -1,9 +1,6 @@
 <?php
 
-
-
-    session_start();
- 
+session_start();
 
       
 $REG['BACKGROUND_COLOR_RED'] = 255;

@@ -3,9 +3,11 @@
 include_once("utils.php");
 require_once("config.php");
 
-if (!isset($_SESSION['lt_user_id'])) {
-  header("Location: index.php?go=login");
-}
+session_start();
+
+// if (!isset($_SESSION['lt_user_id'])) {
+//   header("Location: index.php?go=login");
+// }
 
 
 include_once("header.php");
@@ -23,7 +25,7 @@ function options_edit() {
   global $db_prefix;
   global $siteurl;
 
-  $r = my_sql( "select username, name, email, city, paypal from " . $db_prefix . "users where id='" . $_SESSION['lt_user_id'] . "'");
+  $r = my_query( "select username, name, email, city, paypal from " . $db_prefix . "users where id='" . $_SESSION['lt_user_id'] . "'");
   list($username, $name, $email, $city, $paypal) = mysqli_fetch_row($r);
 ?>
 <center><h1>Account Options</h1></center>
@@ -88,7 +90,7 @@ function options_edit() {
 <p><strong><?php echo $siteurl; ?>index.php?r=<?php echo $_SESSION['lt_user_id']; ?></strong>
   
     <?php
-  $r = my_sql( "select balance from " . $db_prefix . "users where id='" . mysqli_real_escape_string($_SESSION['lt_user_id']) . "'");
+  $r = my_query( "select balance from " . $db_prefix . "users where id='" . mysqli_real_escape_string($_SESSION['lt_user_id']) . "'");
   list($balance) = mysqli_fetch_row($r);
 
 ?>
@@ -98,7 +100,7 @@ function options_edit() {
   $<?php echo currency_display($balance); ?>
 <h2>Total Winnings:</h2>
 <?php
-  $r = my_sql( "select date, mestype, amount from " . $db_prefix . "messages
+  $r = my_query( "select date, mestype, amount from " . $db_prefix . "messages
   where user_id='" . mysqli_real_escape_string($_SESSION['lt_user_id']) . "'");
   ?>
   <table width="400" border="1" cellspacing="0" cellpadding="2">
@@ -142,7 +144,7 @@ function options_edit() {
   <th width="400" bgcolor="#BCBCBC">Failed login time</th>
   </tr>
 <?php
-  $r = my_sql( "select date from " . $db_prefix . "failed_logins
+  $r = my_query( "select date from " . $db_prefix . "failed_logins
   where username='" . mysqli_real_escape_string($username) . "' and date > '" .  (time() - 24*60*60) . "' order by date desc");
   while (list($date) = mysqli_fetch_row($r)) {
     $all_time = time() - $date;
@@ -214,7 +216,7 @@ function options_edit2() {
     }
   }
 
-  $r = my_sql( "update " . $db_prefix . "users set
+  $r = my_query( "update " . $db_prefix . "users set
   name='". mysqli_escape_string($_POST['name']) ."',
   email='". mysqli_escape_string($_POST['email']) ."',
   city='". mysqli_escape_string($_POST['city']) ."',
@@ -230,7 +232,7 @@ function options_edit2() {
 function history_show() {
   global $db_prefix;
 
-  $r = my_sql("select id, lottery_id, price, won from " . $db_prefix . "tickets
+  $r = my_query("select id, lottery_id, price, won from " . $db_prefix . "tickets
                  where user_id='" . $_SESSION['lt_user_id'] . "' order by id");
   ?>
   <div align="center">
@@ -264,7 +266,7 @@ function balance_show() {
   global $paypal;
   global $siteurl;
 
-  $r = my_sql( "select balance from " . $db_prefix . "users where id='" . mysqli_real_escape_string($_SESSION['lt_user_id']) . "'");
+  $r = my_query( "select balance from " . $db_prefix . "users where id='" . mysqli_real_escape_string($_SESSION['lt_user_id']) . "'");
   list($balance) = mysqli_fetch_row($r);
 
   $return_url = $siteurl . "account.php?go=deposit";
@@ -310,14 +312,14 @@ function referrals_show() {
   <div align="center">
   <h1>Referral Information:</h1>
   <?php
-  $r = my_sql( "select id, username from " . $db_prefix . "users where referrer_id='" . $_SESSION['lt_user_id'] . "' order by username");
+  $r = my_query( "select id, username from " . $db_prefix . "users where referrer_id='" . $_SESSION['lt_user_id'] . "' order by username");
   while (list($id, $username) = mysqli_fetch_row($r)) {
     echo "$username<br>";
   }
   ?>
   <h2>Tickets Purchased (by your referrals):</h2>
   <?php
-    $r = my_sql( "select u.username, l.id, l.started, l.duration, l.ticket_price
+    $r = my_query( "select u.username, l.id, l.started, l.duration, l.ticket_price
                    from " . $db_prefix . "users u, " . $db_prefix . "lotteries l, " . $db_prefix . "tickets t
                    where u.referrer_id='" . $_SESSION['lt_user_id'] ."'
                    and t.user_id=u.id and t.lottery_id=l.id and l.ended='0' order by u.username");
@@ -332,7 +334,7 @@ function referrals_show() {
   </tr>
   <?php
     while (list($username, $id, $started, $duration, $ticket_price) = mysqli_fetch_row($r)) {
-      $r1 = my_sql( "select id from " . $db_prefix . "tickets where lottery_id='$id'");
+      $r1 = my_query( "select id from " . $db_prefix . "tickets where lottery_id='$id'");
       $tickets_qty = mysqli_num_rows($r1);
       $amount = $tickets_qty * $ticket_price;
   ?>
@@ -350,12 +352,12 @@ function referrals_show() {
 
   <h2>Winners:</h2>
   <?php
-    $r = my_sql( "select u.username, l.id, l.started, l.ended, l.ticket_price, t.won
+    $r = my_query( "select u.username, l.id, l.started, l.ended, l.ticket_price, t.won
                    from " . $db_prefix . "users u, " . $db_prefix . "lotteries l, " . $db_prefix . "tickets t
                    where u.referrer_id='" . $_SESSION['lt_user_id'] ."'
                    and t.user_id=u.id and t.lottery_id=l.id and t.won>'0' order by u.username");
   ?>
-    <table width="100%" border="1" cellspacing="0" cellpadding="2">
+  <table width="100%" border="1" cellspacing="0" cellpadding="2">
   <tr>
   <th width="20%" bgcolor="#BCBCBC">Name</th>
   <th width="20%" bgcolor="#BCBCBC">Raffle ID</th>
@@ -365,8 +367,8 @@ function referrals_show() {
   </tr>
   <?php
     while (list($username, $id, $started, $ended, $ticket_price, $won) = mysqli_fetch_row($r)) {
-      $r1 = my_sql( "select id from " . $db_prefix . "tickets where lottery_id='$id'");
-      $tickets_qty = mysql_num_rows($r1);
+      $r1 = my_query( "select id from " . $db_prefix . "tickets where lottery_id='$id'");
+      $tickets_qty = mysqli_num_rows($r1);
   ?>
   <tr>
   <td><?php echo $username; ?></td>

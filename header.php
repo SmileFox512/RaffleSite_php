@@ -8,8 +8,8 @@
 
 <!--
 
-|    DESIGN + Pat Heard                                     
-|      DATE + 2005.08.26                                   
+|    DESIGN + Pat Heard
+|      DATE + 2005.08.26
 
 
 -->
@@ -183,7 +183,7 @@ function confirmTicketBuy(lottery_id) {
 <table border="0" align="center" cellpadding="0" cellspacing="0">
   <tr>
     <td>
-	
+
 
 
 
@@ -208,21 +208,21 @@ function confirmTicketBuy(lottery_id) {
         <h1>
           Menu
         </h1>
-      
+
 
         <div class="links">
 		    <a href="index.php">Main Page</a>
-        <!-- <?php if (isset($logged) && ($logged)) { ?> -->
+        <!-- <?php if (isset($logged) && ($logged)) {?> -->
         <a href="account.php">My Account</a>
         <a href="index.php?go=logout">Logout</a>
         <a href="index.php?go=support">Support Center</a>
-        <?php } else { ?>
+        <?php } else {?>
         <a href="signup.php">Sign Up</a>
         <a href="index.php?go=login">Login</a>
-        <!-- <?php } ?> -->
+        <!-- <?php }?> -->
         <a href="index.php?go=archive">Archive</a>
         <a href="index.php?go=faq">Frequently Asked Questions</a>
-       
+
         </div>
 
 
@@ -232,7 +232,7 @@ function confirmTicketBuy(lottery_id) {
 
     </div>
 
-		 <div id="text">
+		<div id="text">
 
 
 

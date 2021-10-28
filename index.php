@@ -8,10 +8,9 @@ function archive_show() {
   global $db_prefix;
   global $iink;
 
-
-
+  echo("errrrrrrrrrrrrr");
   $r = my_query("select id, lot_id, amount, started, duration from " . $db_prefix . "archive order by started desc");
-  ?>
+?>
   <div align="center">
   <h1>Archive</h1>
   <table width="100%" border="1" cellspacing="0" cellpadding="2" class="datatable">
@@ -36,8 +35,8 @@ function archive_show() {
     }
   ?>
   </table>
-</div>
-<?php
+  </div>
+  <?php
 
   return(0);
 }
@@ -69,8 +68,8 @@ function lotteries_show() {
   
   <div id="dhtmlfloatie" ></div>
 
- <a href="#" onMouseover="showfloatie(floattext[0], event, '#007AC9', 250, 20)" onMouseout="hidefloatie()" class="info"> End Date</a>
- </th>
+  <a href="#" onMouseover="showfloatie(floattext[0], event, '#007AC9', 250, 20)" onMouseout="hidefloatie()" class="info"> End Date</a>
+  </th>
   <th width="20%" bgcolor="#dddddd">
   <a href="#" onMouseover="showfloatie(floattext[1], event, '#007AC9', 250, 25)" onMouseout="hidefloatie()" class="info">Ticket Price</a>
   </th>
@@ -80,7 +79,7 @@ function lotteries_show() {
   <th width="20%" bgcolor="#dddddd">
   <a href="#" onMouseover="showfloatie(floattext[3], event, '#007AC9', 250, 40)" onMouseout="hidefloatie()" class="info">Available to be Won</a></th>
   <th width="30%" bgcolor="#dddddd" colspan="2">
-   <a href="#" onMouseover="showfloatie(floattext[4], event, '#007AC9', 250, 60)" onMouseout="hidefloatie()" class="info">Options</a>
+  <a href="#" onMouseover="showfloatie(floattext[4], event, '#007AC9', 250, 60)" onMouseout="hidefloatie()" class="info">Options</a>
   </th>
   </tr>
   <?php

@@ -1,6 +1,6 @@
   <div id="footer">
     
-        &copy;2006 All Rights Reserved<br/>
+        &copy;2021 All Rights Reserved<br/>
       </div>
     </div>
 

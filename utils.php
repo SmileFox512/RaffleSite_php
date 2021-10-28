@@ -29,7 +29,7 @@ function my_query($sql) {
   if ($result) return $result;
   //  error handling here
   if (DEBUG_MODE) { error_report(10); };
-//  error_report(10);
+  //  error_report(10);
   die;
 
   return false;
