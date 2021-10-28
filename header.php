@@ -206,21 +206,22 @@ function confirmTicketBuy(lottery_id) {
       <div class="block">
 
         <h1>
-          Menu</h1>
+          Menu
+        </h1>
       
 
         <div class="links">
-		<a href="index.php">Main Page</a>
-<?php if (isset($logged) && ($logged)) { ?>
-<a href="account.php">My Account</a>
-<a href="index.php?go=logout">Logout</a>
-<a href="index.php?go=support">Support Center</a>
-<?php } else { ?>
-<a href="signup.php">Sign Up</a>
-<a href="index.php?go=login">Login</a>
-<?php } ?>
-<a href="index.php?go=archive">Archive</a>
-<a href="index.php?go=faq">Frequently Asked Questions</a>
+		    <a href="index.php">Main Page</a>
+        <!-- <?php if (isset($logged) && ($logged)) { ?> -->
+        <a href="account.php">My Account</a>
+        <a href="index.php?go=logout">Logout</a>
+        <a href="index.php?go=support">Support Center</a>
+        <?php } else { ?>
+        <a href="signup.php">Sign Up</a>
+        <a href="index.php?go=login">Login</a>
+        <!-- <?php } ?> -->
+        <a href="index.php?go=archive">Archive</a>
+        <a href="index.php?go=faq">Frequently Asked Questions</a>
        
         </div>
 
