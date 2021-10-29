@@ -175,8 +175,8 @@ function confirmTicketBuy(lottery_id) {
     <td>
       <div id="siteBox">
         <div id="header">
-          <h1 class="title">Raffle Script! </h1>
-          <h2 class="subTitle"><a href="#">RAFFLESCRIPT.COM</a></h2>
+          <h1 class="title">7WIN </h1>
+          <h2 class="subTitle"><a href="#">7WIN.CA</a></h2>
           <!-- Opera bug fix -->
           &nbsp;
         </div>
@@ -188,7 +188,10 @@ function confirmTicketBuy(lottery_id) {
               </h1>
               <div class="links">
                 <a href="index.php">Main Page</a>
-                <?php if (isset($logged) && ($logged)) {?>
+                <?php
+                // echo(isset($logged));
+                // echo($logged) ;
+                if (isset($logged)){?> 
                 <a href="account.php">My Account</a>
                 <a href="index.php?go=logout">Logout</a>
                 <a href="index.php?go=support">Support Center</a>
