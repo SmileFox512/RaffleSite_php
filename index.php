@@ -8,7 +8,6 @@ function archive_show() {
   global $db_prefix;
   global $iink;
 
-  echo("errrrrrrrrrrrrr");
   $r = my_query("select id, lot_id, amount, started, duration from " . $db_prefix . "archive order by started desc");
 ?>
   <div align="center">
