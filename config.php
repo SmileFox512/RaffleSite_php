@@ -5,12 +5,13 @@
 define('DB_NAME', 'raffle_db');
 define('DB_USER', 'root');
 define('DB_PASSWORD', '');
-define('DB_HOST', 'localhost:3306');
+define('DB_HOST', 'localhost');
+define('DB_PORT', 3306);
 
 define('DEBUG_MODE', '0');
 
 
-$link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME) or die ("Could not connect to database. Try later<BR>");
+$link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT) or die ("Could not connect to database. Try later<BR>");
 
 //If you plan on running multiple sites on one database, make sure you have a different prefix for each website.
   $db_prefix = "raffle_";
