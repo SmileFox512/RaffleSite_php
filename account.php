@@ -1,13 +1,13 @@
 <?php
 
 include_once("utils.php");
-require_once("config.php");
+include_once("config.php");
 
-session_start();
 
-// if (!isset($_SESSION['lt_user_id'])) {
-//   header("Location: index.php?go=login");
-// }
+
+if (!isset($_SESSION['lt_user_id'])) {
+  header("Location: index.php?go=login");
+}
 
 
 include_once("header.php");
@@ -24,7 +24,8 @@ include_once("header.php");
 function options_edit() {
   global $db_prefix;
   global $siteurl;
-
+  global $link;
+  
   $r = my_query( "select username, name, email, city, paypal from " . $db_prefix . "users where id='" . $_SESSION['lt_user_id'] . "'");
   list($username, $name, $email, $city, $paypal) = mysqli_fetch_row($r);
 ?>
@@ -90,7 +91,7 @@ function options_edit() {
 <p><strong><?php echo $siteurl; ?>index.php?r=<?php echo $_SESSION['lt_user_id']; ?></strong>
   
     <?php
-  $r = my_query( "select balance from " . $db_prefix . "users where id='" . mysqli_real_escape_string($_SESSION['lt_user_id']) . "'");
+  $r = my_query( "select balance from " . $db_prefix . "users where id='" . mysqli_real_escape_string($link, $_SESSION['lt_user_id']) . "'");
   list($balance) = mysqli_fetch_row($r);
 
 ?>
@@ -101,7 +102,7 @@ function options_edit() {
 <h2>Total Winnings:</h2>
 <?php
   $r = my_query( "select date, mestype, amount from " . $db_prefix . "messages
-  where user_id='" . mysqli_real_escape_string($_SESSION['lt_user_id']) . "'");
+  where user_id='" . mysqli_real_escape_string($link, $_SESSION['lt_user_id']) . "'");
   ?>
   <table width="400" border="1" cellspacing="0" cellpadding="2">
   <tr>
@@ -145,7 +146,7 @@ function options_edit() {
   </tr>
 <?php
   $r = my_query( "select date from " . $db_prefix . "failed_logins
-  where username='" . mysqli_real_escape_string($username) . "' and date > '" .  (time() - 24*60*60) . "' order by date desc");
+  where username='" . mysqli_real_escape_string($link, $username) . "' and date > '" .  (time() - 24*60*60) . "' order by date desc");
   while (list($date) = mysqli_fetch_row($r)) {
     $all_time = time() - $date;
     $hours = floor($all_time / 3600);
@@ -265,8 +266,9 @@ function balance_show() {
   global $db_prefix;
   global $paypal;
   global $siteurl;
+  global $link;
 
-  $r = my_query( "select balance from " . $db_prefix . "users where id='" . mysqli_real_escape_string($_SESSION['lt_user_id']) . "'");
+  $r = my_query( "select balance from " . $db_prefix . "users where id='" . mysqli_real_escape_string($link, $_SESSION['lt_user_id']) . "'");
   list($balance) = mysqli_fetch_row($r);
 
   $return_url = $siteurl . "account.php?go=deposit";

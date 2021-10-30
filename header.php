@@ -185,13 +185,12 @@ function confirmTicketBuy(lottery_id) {
             <div class="block">
               <h1>
                 Menu
-              </h1>
+	            </h1>
               <div class="links">
                 <a href="index.php">Main Page</a>
                 <?php
-                // echo(isset($logged));
-                // echo($logged) ;
-                if (isset($logged)){?> 
+                // echo("-------logged compare");
+                if (isset($logged) && ($logged)){ ?>
                 <a href="account.php">My Account</a>
                 <a href="index.php?go=logout">Logout</a>
                 <a href="index.php?go=support">Support Center</a>

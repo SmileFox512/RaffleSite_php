@@ -1,15 +1,19 @@
 <?
-@session_start();
-include_once("config.php");
-if($_POST){
-if($_POST[user]==$admin_username && $_POST[pass]==$admin_password){
-$_SESSION[aname] = 4;
-header("location:flvby.php");
-}else{
-$_SESSION[aname] = 2;
-header("location:".$PHP_SELF."?act=n");
-}
-}
+  session_start();
+  echo("success------------admin submit---------");
+
+  include_once("config.php");
+  if($_POST){
+    if($_POST[user]==$admin_username && $_POST[pass]==$admin_password){
+      $_SESSION[aname] = 4;
+      header("location:flvby.php");
+      echo("success------------a12---------");
+    }else{
+      $_SESSION[aname] = 2;
+      header("location:".$PHP_SELF."?act=n");
+      echo("fail------------a12---------");
+    }
+  }
 ?>
 <html>
 <head>
@@ -37,7 +41,7 @@ return false;
 <link rel="stylesheet" href="style.css" type="text/css">
 <link href="../style.css" rel="stylesheet" type="text/css">
 <style type="text/css">
-<!--
+
 
 .border {
 	border: 1px solid #E1E1E1; height: 18px;
@@ -63,7 +67,7 @@ return false;
 	color: #000000;
 	font-weight: bold;
 }
--->
+
 </style>
 </head>
 <body bgcolor="#FFFFFF" text="#000000" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0" onLoad="javascript:document.f1.user.focus();"> 
@@ -79,10 +83,7 @@ return false;
   </tr> 
   <tr> 
     <td align="center" class="red"> <b> 
-      <?
-	if($_GET[act]=="n")
-	echo "<span class=htext>Invalid Username/Password Given!..</span>";
-	?>
+    
       </b></td> 
   </tr> 
   <tr> 
@@ -97,7 +98,8 @@ return false;
         <tr> 
           <td> <table width="100%" border="0" cellspacing="0" cellpadding="0" align="center" class="outline">
               <tr valign="top"> 
-                <td> <form method="POST" action="<?=$PHP_SELF?>" name="f1" onSubmit="return checkthis()"> 
+                <td> 
+                  <form method="POST" action="a12.php" name="f1" onSubmit="return checkthis()"> 
                     <table border="0" cellspacing="0" cellpadding="5" class="border" width="100%" align="center">
                       <tr valign="top"> 
                         <td height="18" ></td>
@@ -114,8 +116,8 @@ return false;
                         </td>
                       </tr>
                       <tr align="center" valign="top"> 
-                        <td> <div align="center"> </div>
-                          
+                        <td> 
+                          <div align="center"> </div>
                         </td>
                         <td align="left"> 
                           <input type="submit" name="Submit" value="Login" class="Submit"> 

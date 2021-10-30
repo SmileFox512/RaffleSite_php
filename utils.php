@@ -7,6 +7,7 @@
 include_once("config.php");
 include_once("error.php");
 
+session_start();
 function error_report($errcode) {
   global $err;
   global $link;
@@ -69,7 +70,7 @@ function check_12hours_limit($lottery_id, $date = 0) {
     $date = time();
   }
   $r = my_query("select started, duration from " . $db_prefix . "lotteries
-  where id='" . mysqli_real_escape_string($lottery_id) . "'");
+  where id='" . mysqli_real_escape_string( $link, $lottery_id) . "'");
 
   list($started, $duration) = mysqli_fetch_row($r);
 
@@ -83,7 +84,7 @@ $r = my_query("insert into " . $db_prefix . "visits(ip,date) values ('" . ip2lon
 
 if (isset($_COOKIE['lt_user_login']) && isset($_COOKIE['lt_user_password'])) {
   $r = my_query("select id, password from " . $db_prefix . "users where
-  username_hash='" . mysqli_real_escape_string($_COOKIE['lt_user_login']) . "' and password_hash='" . mysqli_real_escape_string($_COOKIE['lt_user_password']) . "'");
+  username_hash='" . mysqli_real_escape_string( $link, $_COOKIE['lt_user_login']) . "' and password_hash='" . mysqli_real_escape_string( $link, $_COOKIE['lt_user_password']) . "'");
   if (mysqli_num_rows($r)) {
     list($user_id, $password) = mysqli_fetch_row($r);
     $_SESSION['lt_user_id'] = $user_id;
@@ -111,9 +112,12 @@ if (isset($_SESSION['lt_user_id'])) {
                  ip='" . ip2long($_SERVER['REMOTE_ADDR']) . "'
                  where id='" . $_SESSION['lt_user_id'] . "'");
   $logged = true;
-}
-else {
+  // echo("-session-true");
+  // echo($logged);
+}else {
   $logged = false;
+  echo("_session_false_second");
+  echo($logged);
 }
 
 // save referrer ID

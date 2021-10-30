@@ -2,7 +2,7 @@
 
 include_once("utils.php");
 include_once("config.php");
-session_start();
+
 
 if (isset($_SESSION['lt_user_id'])) {
   header("Location: index.php");

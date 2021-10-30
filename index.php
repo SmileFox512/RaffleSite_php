@@ -3,7 +3,6 @@
 include_once("utils.php");
 include_once("config.php");
 
-session_start();
 function archive_show() {
   global $db_prefix;
   global $iink;
@@ -374,7 +373,8 @@ function login() {
   <td>
     <div align="left">
       <input type="text" name="username" size="30" <?php if (isset($_POST['username'])) echo "value=\"" . $_POST['username'] . "\"" ?>>
-    </div></td>
+    </div>
+  </td>
 </tr>
 <tr>
   <td width="10%">
@@ -412,16 +412,13 @@ function login() {
 <input type="submit" value="  Login  ">
 </form>
 </div>
-  <?php
-
-
+<?php
   return(0);
 }
 
 function login2() {
   global $db_prefix;
   global $link;
-
   while (list($key,$value) = each($_POST)) {
     if ("" == $value) {
       include_once("header.php");
@@ -509,6 +506,10 @@ if (mysqli_num_rows($r)) {
 
   $_SESSION['lt_user_id'] = $id;
   $_SESSION['lt_user_pass'] = $password;
+
+  $logged = true;
+
+  // echo($logged);
 
   if (isset($_POST['remember'])) {
     setcookie("lt_user_login", md5(md5($username)),time()+100000000);
@@ -634,7 +635,7 @@ function ticket_buy() {
   global $link;
 
   if ((!isset($_GET['id'])) || (!is_numeric($_GET['id']))) {
-//    error_report(9);
+    //error_report(9);
     lotteries_show();
     return(9);
   }
@@ -674,7 +675,7 @@ function support_center() {
   global $db_prefix;
 
   if (!isset($_SESSION['lt_user_id'])) {
-//    error_report(9);
+    //error_report(9);
     lotteries_show();
     return(9);
   }
@@ -1016,15 +1017,15 @@ if (isset($_GET['go'])) {
   $go = $_GET['go'];
   if ('login' == $go) {
   //if user logged in already, make sure he doesn't go to login
-  if (isset($_SESSION['lt_user_id'])) {
-exit("You are already logged in!");
-}else{
-  
-    login();
-    return(1);
-	}
+    if (isset($_SESSION['lt_user_id'])) {
+      $logged = true;
+      exit("You are already logged in!");
+    }else{
+      login();
+      return(1);
+    }
   }
-    if ('archive' == $go) {
+  if ('archive' == $go) {
     archive_show();
     return(1);
   }
@@ -1062,8 +1063,7 @@ exit("You are already logged in!");
   }
 }
   lotteries_show();
-//  finished_show();
-
+  //finished_show();
   return(0);
 }
 

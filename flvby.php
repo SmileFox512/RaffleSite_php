@@ -2,25 +2,26 @@
 
 include_once("utils.php");
 @session_start();
+echo("success------------flvby---------");
 if($_SESSION[aname] == 4){
 
 
-/*if (!isset($_SERVER['PHP_AUTH_USER']))
-{
-  header("WWW-Authenticate: Basic realm=\"Cool Stuff\"");
-  header('HTTP/1.0 401 Unauthorized');
-  echo 'Access Denied';
-  exit;
-}
-else
-{
-  if (($_SERVER['PHP_AUTH_PW']!=$admin_password) || ($_SERVER['PHP_AUTH_USER']!=$admin_username))
-  {
-    header('HTTP/1.0 401 Unauthorized');
-    echo "<h1>Access Denied</h1>";
-    exit;
-  }
-}*/
+// if (!isset($_SERVER['PHP_AUTH_USER']))
+// {
+//   header("WWW-Authenticate: Basic realm=\"Cool Stuff\"");
+//   header('HTTP/1.0 401 Unauthorized');
+//   echo 'Access Denied';
+//   exit;
+// }
+// else
+// {
+//   if (($_SERVER['PHP_AUTH_PW']!=$admin_password) || ($_SERVER['PHP_AUTH_USER']!=$admin_username))
+//   {
+//     header('HTTP/1.0 401 Unauthorized');
+//     echo "<h1>Access Denied</h1>";
+//     exit;
+//   }
+// }
 
 ?>
 <style>
@@ -292,7 +293,7 @@ function accounts_close() {
     return(9);
   }
 
-  $r = my_query("insert into " . $db_prefix . "closed_accounts(user_id) values('" . mysqli_real_escape_string($_GET['id']) . "')");
+  $r = my_query("insert into " . $db_prefix . "closed_accounts(user_id) values('" . mysqli_real_escape_string( $link, $_GET['id']) . "')");
 
   accounts_closed();
 
@@ -308,7 +309,7 @@ function accounts_reopen() {
     return(9);
   }
 
-  $r = my_query("delete from " . $db_prefix . "closed_accounts where id='" . mysqli_real_escape_string($_GET['id']) . "'");
+  $r = my_query("delete from " . $db_prefix . "closed_accounts where id='" . mysqli_real_escape_string( $link, $_GET['id']) . "'");
 
   accounts_closed();
 
@@ -318,6 +319,7 @@ function accounts_reopen() {
 function frauds_list() {
   global $db_prefix;
   global $page_limit;
+  global $link;
 
   if (isset($_GET['page'])) {
     $page = $_GET['page'];
@@ -433,7 +435,7 @@ function frauds_delete() {
     return(9);
   }
 
-  $r = my_query("delete from " . $db_prefix . "frauds where user_id='" . mysqli_real_escape_string($_GET['id']) . "'");
+  $r = my_query("delete from " . $db_prefix . "frauds where user_id='" . mysqli_real_escape_string( $link, $_GET['id']) . "'");
 
   frauds_list();
 
@@ -526,7 +528,7 @@ function debts_show() {
 
 function debts_delete($id = 0) {
   global $db_prefix;
-
+  global $link;
   if ((!$id) && ((!isset($_GET['id'])) || (!is_numeric($_GET['id'])))) {
     error_report(9);
     lotteries_show();
@@ -534,11 +536,11 @@ function debts_delete($id = 0) {
   }
 
   if (!$id) {
-    $r = my_query("delete from " . $db_prefix . "debts where user_id='" . mysqli_real_escape_string($_GET['id']) . "'");
+    $r = my_query("delete from " . $db_prefix . "debts where user_id='" . mysqli_real_escape_string( $link, $_GET['id']) . "'");
     debts_show();
   }
   else {
-    $r = my_query("delete from " . $db_prefix . "debts where user_id='" . mysqli_real_escape_string($id) . "'");
+    $r = my_query("delete from " . $db_prefix . "debts where user_id='" . mysqli_real_escape_string( $link, $id) . "'");
   }
 
   return(0);
@@ -548,6 +550,7 @@ function debts_delete($id = 0) {
 function users_show() {
   global $db_prefix;
   global $page_limit;
+  global $link;
 
   if (isset($_GET['page'])) {
     $page = $_GET['page'];
@@ -560,60 +563,60 @@ function users_show() {
 
   if (isset($_POST['id']) && ($_POST['id'] != "")) {
     if ("" == $where_clause) {
-      $where_clause .= " where id='" . mysqli_real_escape_string($_POST['id']) . "'";
+      $where_clause .= " where id='" . mysqli_real_escape_string( $link, $_POST['id']) . "'";
     }
     else {
-      $where_clause .= " and id='" . mysqli_real_escape_string($_POST['id']) . "'";
+      $where_clause .= " and id='" . mysqli_real_escape_string( $link, $_POST['id']) . "'";
     }
   }
   if (isset($_POST['username']) && ($_POST['username'] != "")) {
     if ("" == $where_clause) {
-      $where_clause .= " where username like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['username'])) . "'";
+      $where_clause .= " where username like '" . mysqli_real_escape_string( $link, str_replace("*","%",$_POST['username'])) . "'";
     }
     else {
-      $where_clause .= " and username like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['username'])) . "'";
+      $where_clause .= " and username like '" . mysqli_real_escape_string( $link, str_replace("*","%",$_POST['username'])) . "'";
     }
   }
   if (isset($_POST['name']) && ($_POST['name'] != "")) {
     if ("" == $where_clause) {
-      $where_clause .= " where name like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['name'])) . "'";
+      $where_clause .= " where name like '" . mysqli_real_escape_string( $link, str_replace("*","%",$_POST['name'])) . "'";
     }
     else {
-      $where_clause .= " and name like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['name'])) . "'";
+      $where_clause .= " and name like '" . mysqli_real_escape_string( $link, str_replace("*","%",$_POST['name'])) . "'";
     }
   }
   if (isset($_POST['email']) && ($_POST['email'] != "")) {
     if ("" == $where_clause) {
-      $where_clause .= " where email like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['email'])) . "'";
+      $where_clause .= " where email like '" . mysqli_real_escape_string( $link, str_replace("*","%",$_POST['email'])) . "'";
     }
     else {
-      $where_clause .= " and email like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['email'])) . "'";
+      $where_clause .= " and email like '" . mysqli_real_escape_string( $link, str_replace("*","%",$_POST['email'])) . "'";
     }
   }
   if (isset($_POST['city']) && ($_POST['city'] != "")) {
     if ("" == $where_clause) {
-      $where_clause .= " where city like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['city'])) . "'";
+      $where_clause .= " where city like '" . mysqli_real_escape_string( $link, str_replace("*","%",$_POST['city'])) . "'";
     }
     else {
-      $where_clause .= " and city like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['city'])) . "'";
+      $where_clause .= " and city like '" . mysqli_real_escape_string( $link, str_replace("*","%",$_POST['city'])) . "'";
     }
   }
   if (isset($_POST['paypal']) && ($_POST['paypal'] != "")) {
     if ("" == $where_clause) {
-      $where_clause .= " where paypal like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['paypal'])) . "'";
+      $where_clause .= " where paypal like '" . mysqli_real_escape_string( $link, str_replace("*","%",$_POST['paypal'])) . "'";
     }
     else {
-      $where_clause .= " and paypal like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['paypal'])) . "'";
+      $where_clause .= " and paypal like '" . mysqli_real_escape_string( $link, str_replace("*","%",$_POST['paypal'])) . "'";
     }
   }
   if (isset($_POST['referrer']) && ($_POST['referrer'] != "")) {
-    $r = my_query("select id from " . $db_prefix . "users where username like '" . mysqli_real_escape_string(str_replace("*","%",$_POST['referrer'])) . "'");
+    $r = my_query("select id from " . $db_prefix . "users where username like '" . mysqli_real_escape_string( $link, str_replace("*","%",$_POST['referrer'])) . "'");
     list($referrer_id) = mysqli_fetch_row($r);
     if ("" == $where_clause) {
-      $where_clause .= " where referrer_id='" . mysqli_real_escape_string($referrer_id) . "'";
+      $where_clause .= " where referrer_id='" . mysqli_real_escape_string( $link, $referrer_id) . "'";
     }
     else {
-      $where_clause .= " and referrer_id='" . mysqli_real_escape_string($referrer_id) . "'";
+      $where_clause .= " and referrer_id='" . mysqli_real_escape_string( $link, $referrer_id) . "'";
     }
   }
 
@@ -747,9 +750,10 @@ function users_show() {
 
 function users_delete() {
   global $db_prefix;
+  global $link;
 
   if (isset($_GET['paypal'])) {
-    $r = my_query("select id from " . $db_prefix . "users where paypal='" . mysqli_real_escape_string($_GET['paypal']) . "'");
+    $r = my_query("select id from " . $db_prefix . "users where paypal='" . mysqli_real_escape_string( $link, $_GET['paypal']) . "'");
     list($id) = mysqli_fetch_row($r);
     debts_delete($id);
     return(0);
@@ -762,7 +766,7 @@ function users_delete() {
   }
 
   if (isset($_GET['id'])) {
-    $r = my_query("delete from " . $db_prefix . "users where id='" . mysqli_real_escape_string($_GET['id']) . "'");
+    $r = my_query("delete from " . $db_prefix . "users where id='" . mysqli_real_escape_string( $link, $_GET['id']) . "'");
 
     users_show();
   }
@@ -833,6 +837,7 @@ function users_suspend2() {
 
 function users_unsuspend() {
   global $db_prefix;
+  global $link;
 
   if ((!isset($_GET['id'])) || (!is_numeric($_GET['id']))) {
     error_report(9);
@@ -840,8 +845,8 @@ function users_unsuspend() {
     return(9);
   }
 
-//  $r = my_query("delete from " . $db_prefix . "suspended where user_id='" . mysqli_real_escape_string($_GET['id']) . "'");
-  $r = my_query("update " . $db_prefix . "suspended set until='" . time() . "' where user_id='" . mysqli_real_escape_string($_GET['id']) . "'");
+//  $r = my_query("delete from " . $db_prefix . "suspended where user_id='" . mysqli_real_escape_string( $link, $_GET['id']) . "'");
+  $r = my_query("update " . $db_prefix . "suspended set until='" . time() . "' where user_id='" . mysqli_real_escape_string( $link, $_GET['id']) . "'");
 
   suspended_show();
 
@@ -1475,6 +1480,7 @@ function lotteries_show() {
 
 function lotteries_add() {
   global $db_prefix;
+  global $link;
 
   while (list($key,$value) = each($_POST)) {
     if ("" == $value) {
@@ -1489,7 +1495,7 @@ function lotteries_add() {
   '" . $_POST['duration'] . "',
   '" . $_POST['ticket_price'] . "',
   '" . $_POST['win_percentage'] . "',
-  '" . mysqli_real_escape_string($_POST['description']) . "',
+  '" . mysqli_real_escape_string( $link, $_POST['description']) . "',
   '" . $_POST['available'] . "'
   )");
 
@@ -1507,7 +1513,7 @@ function lotteries_delete() {
     return(9);
   }
 
-  $r = my_query("delete from " . $db_prefix . "lotteries where id='" . mysqli_real_escape_string($_GET['id']) . "'");
+  $r = my_query("delete from " . $db_prefix . "lotteries where id='" . mysqli_real_escape_string( $link, $_GET['id']) . "'");
 
   lotteries_show();
 
@@ -1676,6 +1682,7 @@ function lotteries_finish_manually2() {
 
 function lotteries_send_to_arc() {
   global $db_prefix;
+  global $link;
 
   if ((!isset($_GET['id'])) || (!is_numeric($_GET['id']))) {
     error_report(9);
@@ -1696,7 +1703,7 @@ function lotteries_send_to_arc() {
   $r = my_query("insert into " . $db_prefix . "archive(lot_id,amount,started,duration)
                  values('$id', '$amount', '$started', '$duration')");
 
-  $r = my_query("delete from " . $db_prefix . "lotteries where id='" . mysqli_real_escape_string($id) . "'");
+  $r = my_query("delete from " . $db_prefix . "lotteries where id='" . mysqli_real_escape_string( $link, $id) . "'");
 
   finished_show();
 
@@ -1757,6 +1764,7 @@ function winners_show() {
 
 function paypal_parser() {
   global $db_prefix;
+  global $link;
 
   if (isset($_POST['parser_list'])) {
     $strings = explode("\n", $_POST['parser_list']);
@@ -1832,7 +1840,7 @@ function paypal_parser() {
 */
 //      $r = my_query("insert into " . $db_prefix ."tickets(user_id, lottery_id, price) values('$user_id','$lottery_id','$ticket_price')");
 
-      $r = my_query("update " . $db_prefix . "users set balance=balance+'" . mysqli_real_escape_string($amount) . "' where id='$user_id'");
+      $r = my_query("update " . $db_prefix . "users set balance=balance+'" . mysqli_real_escape_string( $link, $amount) . "' where id='$user_id'");
 
       array_push($success, $user_id);
       array_push($credited, $amount);
@@ -2151,6 +2159,7 @@ function tickets_add2() {
 
 function tickets_delete() {
   global $db_prefix;
+  global $link;
 
   if ((!isset($_GET['id'])) || (!is_numeric($_GET['id']))) {
     error_report(9);
@@ -2158,7 +2167,7 @@ function tickets_delete() {
     return(9);
   }
 
-  $r = my_query("delete from " . $db_prefix . "tickets where id='" . mysqli_real_escape_string($_GET['id']) . "'");
+  $r = my_query("delete from " . $db_prefix . "tickets where id='" . mysqli_real_escape_string( $link, $_GET['id']) . "'");
 
   tickets_show();
 
@@ -2246,6 +2255,7 @@ function fictitious_show() {
 
 function fictitious_delete() {
   global $db_prefix;
+  global $link;
 
   if ((!isset($_GET['id'])) || (!is_numeric($_GET['id']))) {
     error_report(9);
@@ -2253,7 +2263,7 @@ function fictitious_delete() {
     return(9);
   }
 
-  $r = my_query("delete from " . $db_prefix . "fictitious where user_id='" . mysqli_real_escape_string($_GET['id']) . "'");
+  $r = my_query("delete from " . $db_prefix . "fictitious where user_id='" . mysqli_real_escape_string( $link, $_GET['id']) . "'");
 
   fictitious_show();
 
@@ -2350,6 +2360,7 @@ function profits_show() {
 
 function profits_accept() {
   global $db_prefix;
+  global $link;
 
   if ((!isset($_GET['id'])) || (!is_numeric($_GET['id']))) {
     error_report(9);
@@ -2357,7 +2368,7 @@ function profits_accept() {
     return(9);
   }
 
-  $r = my_query("update " . $db_prefix . "profits set paid='y' where id='" . mysqli_real_escape_string($_GET['id']) . "'");
+  $r = my_query("update " . $db_prefix . "profits set paid='y' where id='" . mysqli_real_escape_string( $link, $_GET['id']) . "'");
 
   profits_show();
 
@@ -2393,7 +2404,7 @@ function questions_show() {
   <h1>Open Tickets</h1>
   <h2>
   <?php
-    $r = my_query("select name from " . $db_prefix . "support_categories where id='" . mysqli_real_escape_string($category) . "'");
+    $r = my_query("select name from " . $db_prefix . "support_categories where id='" . mysqli_real_escape_string( $link, $category) . "'");
     list($header) = mysqli_fetch_row($r);
     echo $header;
   ?>
@@ -2621,6 +2632,7 @@ function questions_view() {
 
 function questions_answer() {
   global $db_prefix;
+  global $link;
 
   if ((!isset($_GET['id'])) || (!is_numeric($_GET['id']))) {
     error_report(9);
@@ -2629,8 +2641,8 @@ function questions_answer() {
   }
 
   $r = my_query("update " . $db_prefix . "support set status='r',
-  answer='" . mysqli_real_escape_string($_POST['answer']) . "',
-  message='" . mysqli_real_escape_string($_POST['question']) . "'
+  answer='" . mysqli_real_escape_string( $link, $_POST['answer']) . "',
+  message='" . mysqli_real_escape_string( $link, $_POST['question']) . "'
   where id='" . $_GET['id'] . "'");
 
   questions_show();
@@ -2733,6 +2745,7 @@ function credit_accounts() {
 
 function credit_accounts2() {
   global $db_prefix;
+  global $link;
 
   if ((("" == $_POST['username']) && ("" == $_POST['paypal'])) || ("" == $_POST['amount'])) {
     error_report(11);
@@ -2741,8 +2754,8 @@ function credit_accounts2() {
   }
 
   $r = my_query("select id from " . $db_prefix . "users
-  where username='" . mysqli_real_escape_string($_POST['username']) . "'
-  or paypal='" . mysqli_real_escape_string($_POST['paypal']) . "'");
+  where username='" . mysqli_real_escape_string( $link, $_POST['username']) . "'
+  or paypal='" . mysqli_real_escape_string( $link, $_POST['paypal']) . "'");
 
   if (!mysqli_num_rows($r)) {
     error_report(23);
@@ -2835,6 +2848,7 @@ function credit_accounts2() {
 
 function image_verifications() {
   global $db_prefix;
+  global $link;
 
   if (isset($_GET['id'])) {
     if (!is_numeric($_GET['id'])) {
@@ -2843,7 +2857,7 @@ function image_verifications() {
       return(9);
     }
 
-    $r = my_query("update " . $db_prefix . "image_verifications set status='" . mysqli_real_escape_string($_GET['value']) . "'
+    $r = my_query("update " . $db_prefix . "image_verifications set status='" . mysqli_real_escape_string( $link, $_GET['value']) . "'
     where id='" . $_GET['id'] . "'");
   }
 
@@ -3027,6 +3041,7 @@ function stats_show() {
 
 function faq_add() {
   global $db_prefix;
+  global $link;
 
   $search_line = $_POST['question'];
   
@@ -3036,10 +3051,10 @@ function faq_add() {
   $search_line = str_replace("  ", " ", $search_line);
 
   $r = my_query("insert into " . $db_prefix . "faq(question,answer,date, search) values(
-  '" . mysqli_real_escape_string($_POST['question']) . "',
-  '" . mysqli_real_escape_string($_POST['answer']) . "',
+  '" . mysqli_real_escape_string( $link, $_POST['question']) . "',
+  '" . mysqli_real_escape_string( $link, $_POST['answer']) . "',
   '" . time() . "',
-  '" . mysqli_real_escape_string($search_line) . "')");
+  '" . mysqli_real_escape_string( $link, $search_line) . "')");
 
   if (isset($_POST['support'])) {
     questions_answer();
@@ -3133,6 +3148,7 @@ function faq_show() {
 
 function parse_get_params() {
 global $db_prefix;
+global $link;
 if (isset($_GET['go'])) {
   $go = $_GET['go'];
   if ('addlottery' == $go) {
@@ -3337,7 +3353,7 @@ if (isset($_GET['go'])) {
   }
   //delete faq
     if ('delfaq' == $go) {
-	$r = my_query("delete from " . $db_prefix . "faq where id='" . mysqli_real_escape_string($_GET['id']) . "'");
+	$r = my_query("delete from " . $db_prefix . "faq where id='" . mysqli_real_escape_string( $link, $_GET['id']) . "'");
 	
     faq_show();
     return(1);
