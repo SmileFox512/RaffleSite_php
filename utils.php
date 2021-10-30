@@ -116,8 +116,8 @@ if (isset($_SESSION['lt_user_id'])) {
   // echo($logged);
 }else {
   $logged = false;
-  echo("_session_false_second");
-  echo($logged);
+  // echo("_session_false_second");
+  // echo($logged);
 }
 
 // save referrer ID
