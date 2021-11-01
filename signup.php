@@ -8,205 +8,216 @@ if (isset($_SESSION['lt_user_id'])) {
   header("Location: index.php");
 }
 
-  if (isset($_POST['username'])) {
-    user_signup2();
-  }
-  else {
-    include_once("header.php");
-    user_signup();
-  }
+if (isset($_POST['username'])) {
+  user_signup2();
+} else {
+  include_once("header.php");
+  user_signup();
+}
 
 
-function user_signup() {
+function user_signup()
+{
   global $db_prefix;
 ?>
 
-<div align="center">
-<h1>Sign Up</h1>
-<form action="signup.php" method="post">
-<table width="100%">
-<tr>
-  <td width="10%">  </td>
-  <td width="30%" valign="top" align="right">
-   Username:<br>  </td>
-  <td align="left">
-   <input type="text" name="username" size="30" <?php if (isset($_POST['username'])) echo "value=\"" . $_POST['username'] . "\"" ?>>  </td>
-</tr>
-<tr>
-  <td width="10%">  </td>
-  <td width="30%" valign="top" align="right">
-   Name:<br>  </td>
-  <td align="left">
-   <input type="text" name="name" size="30" <?php if (isset($_POST['name'])) echo "value=\"" . $_POST['name'] . "\"" ?>>  </td>
-</tr>
-<tr>
-  <td width="10%">  </td>
-  <td width="30%" valign="top" align="right">
-   Password:<br>  </td>
-  <td align="left">
-   <input type="password" name="password" size="30">  </td>
-</tr>
-<tr>
-  <td width="10%">  </td>
-  <td width="30%" valign="top" align="right">
-   Confirm Password:<br>  </td>
-  <td align="left">
-   <input type="password" name="password2" size="30">  </td>
-</tr>
-<tr>
-  <td width="10%">  </td>
-  <td width="30%" valign="top" align="right">
-   E-mail:<br>  </td>
-  <td align="left">
-   <input type="text" name="email" size="30" <?php if (isset($_POST['email'])) echo "value=\"" . $_POST['email'] . "\"" ?>>  </td>
-</tr>
-<tr>
-  <td width="10%">  </td>
-  <td width="30%" valign="top" align="right">
-   Paypal:<br>  </td>
-  <td align="left">
-   <input type="text" name="paypal" size="30" <?php if (isset($_POST['paypal'])) echo "value=\"" . $_POST['paypal'] . "\"" ?>>  </td>
-</tr>
-<tr>
-  <td width="10%">  </td>
-  <td width="30%" valign="top" align="right">
-   City:<br>  </td>
-  <td align="left">
-   <input type="text" name="city" size="30" <?php if (isset($_POST['city'])) echo "value=\"" . $_POST['city'] . "\"" ?>>  </td>
-</tr>
-<tr>
-  <td width="10%">  </td>
-  <td width="30%" valign="top" align="right">
-   Country:<br>  </td>
-  <td align="left"><input type="text" name="country" size="30" <?php if (isset($_POST['country'])) echo "value=\"" . $_POST['country'] . "\"" ?> /></td>
-</tr>
-<tr>
-  <td width="10%">  </td>
-  <td width="30%" valign="top" align="right">
-   ZIP Code:<br>  </td>
-  <td align="left">
-   <input type="text" name="zip" size="30" <?php if (isset($_POST['zip'])) echo "value=\"" . $_POST['zip'] . "\"" ?>>  </td>
-</tr>
-<tr>
-  <td width="10%">  </td>
-  <td width="30%" valign="top" align="right">
-   Gender:<br>  </td>
-  <td align="left">
-  <select name="gender">
-  <option value="m">male
-  <option value="f">female
-  </select>  </td>
-</tr>
+  <div align="center">
+    <h1>Sign Up</h1>
+    <form action="signup.php" method="post">
+      <table width="100%">
+        <tr>
+          <td width="10%"> </td>
+          <td width="30%" valign="top" align="right">
+            Username:<br> </td>
+          <td align="left">
+            <input type="text" name="username" size="30" <?php if (isset($_POST['username'])) echo "value=\"" . $_POST['username'] . "\"" ?>>
+          </td>
+        </tr>
+        <tr>
+          <td width="10%"> </td>
+          <td width="30%" valign="top" align="right">
+            Name:<br> </td>
+          <td align="left">
+            <input type="text" name="name" size="30" <?php if (isset($_POST['name'])) echo "value=\"" . $_POST['name'] . "\"" ?>>
+          </td>
+        </tr>
+        <tr>
+          <td width="10%"> </td>
+          <td width="30%" valign="top" align="right">
+            Password:<br> </td>
+          <td align="left">
+            <input type="password" name="password" size="30">
+          </td>
+        </tr>
+        <tr>
+          <td width="10%"> </td>
+          <td width="30%" valign="top" align="right">
+            Confirm Password:<br> </td>
+          <td align="left">
+            <input type="password" name="password2" size="30">
+          </td>
+        </tr>
+        <tr>
+          <td width="10%"> </td>
+          <td width="30%" valign="top" align="right">
+            E-mail:<br> </td>
+          <td align="left">
+            <input type="text" name="email" size="30" <?php if (isset($_POST['email'])) echo "value=\"" . $_POST['email'] . "\"" ?>>
+          </td>
+        </tr>
+        <tr>
+          <td width="10%"> </td>
+          <td width="30%" valign="top" align="right">
+            Paypal:<br> </td>
+          <td align="left">
+            <input type="text" name="paypal" size="30" <?php if (isset($_POST['paypal'])) echo "value=\"" . $_POST['paypal'] . "\"" ?>>
+          </td>
+        </tr>
+        <tr>
+          <td width="10%"> </td>
+          <td width="30%" valign="top" align="right">
+            City:<br> </td>
+          <td align="left">
+            <input type="text" name="city" size="30" <?php if (isset($_POST['city'])) echo "value=\"" . $_POST['city'] . "\"" ?>>
+          </td>
+        </tr>
+        <tr>
+          <td width="10%"> </td>
+          <td width="30%" valign="top" align="right">
+            Country:<br> </td>
+          <td align="left"><input type="text" name="country" size="30" <?php if (isset($_POST['country'])) echo "value=\"" . $_POST['country'] . "\"" ?> /></td>
+        </tr>
+        <tr>
+          <td width="10%"> </td>
+          <td width="30%" valign="top" align="right">
+            ZIP Code:<br> </td>
+          <td align="left">
+            <input type="text" name="zip" size="30" <?php if (isset($_POST['zip'])) echo "value=\"" . $_POST['zip'] . "\"" ?>>
+          </td>
+        </tr>
+        <tr>
+          <td width="10%"> </td>
+          <td width="30%" valign="top" align="right">
+            Gender:<br> </td>
+          <td align="left">
+            <select name="gender">
+              <option value="m">male
+              <option value="f">female
+            </select>
+          </td>
+        </tr>
 
 
-<tr>
-  <td width="10%">  </td>
-  <td width="30%" valign="top" align="right">Date of Birth: <br>  </td>
-  <td  align="left">
-  <select name="day">
-  <?php
-    for ($i = 1; $i < 32; $i++) {
-      ?>
-      <option value="<?php echo $i ?>"><?php echo $i ?>
+        <tr>
+          <td width="10%"> </td>
+          <td width="30%" valign="top" align="right">Date of Birth: <br> </td>
+          <td align="left">
+            <select name="day">
+              <?php
+              for ($i = 1; $i < 32; $i++) {
+              ?>
+                <option value="<?php echo $i ?>"><?php echo $i ?>
+                <?php
+              }
+                ?>
+            </select>
+            /
+            <select name="month">
+              <?php
+              for ($i = 1; $i < 13; $i++) {
+              ?>
+                <option value="<?php echo $i ?>"><?php echo $i ?>
+                <?php
+              }
+                ?>
+                </option>
+            </select>
+            /
+            <select name="year">
+              <?php
+              for ($i = 1950; $i < (date("Y", time()) - 3); $i++) {
+              ?>
+                <option value="<?php echo $i ?>"><?php echo $i ?>
+                <?php
+              }
+                ?>
+                </option>
+            </select>
+            (Day/Month/Year)
+          </td>
+        </tr>
+      </table>
       <?php
-    }
-  ?>
-  </select> 
-  / 
-  <select name="month">
-    <?php
-    for ($i = 1; $i < 13; $i++) {
+      $r = my_query("select * from " . $db_prefix . "image_verifications where pagename='sign up' and status='y'");
+      if (mysqli_num_rows($r)) {
       ?>
-    <option value="<?php echo $i ?>"><?php echo $i ?>
-    <?php
-    }
-  ?>
-    </option>
-  </select>
-/  
-<select name="year">
-    <?php
-    for ($i = 1950; $i < (date("Y",time()) - 3); $i++) {
+        <table width="100%">
+          <tr>
+            <td width="10%"> </td>
+            <td width="30%" align="right" valign="top">
+              Enter the number exactly how you see it.<br>
+            </td>
+            <td valign="top" width="46">
+              <input type="text" name="checker" size="6">
+            </td>
+            <td width="672" align="left" valign="top">
+              <img src="jpeg.php" border="0" style="border:#000000; border-style:solid; border-width:1px">
+            </td>
+          </tr>
+        </table>
+      <?php
+      }
       ?>
-    <option value="<?php echo $i ?>"><?php echo $i ?>
-    <?php
-    }
-  ?>
-    </option>
-  </select>
-(Day/Month/Year) </td>
-</tr>
-</table>
+      <br>
+      <input type="submit" value="  Submit  ">
+    </form>
+  </div>
 <?php
-   $r = my_query("select * from " . $db_prefix . "image_verifications where pagename='sign up' and status='y'");
-   if (mysqli_num_rows($r)) {
-?>
- <table width="100%">
- <tr>
- <td width="10%">  </td>
-  <td width="30%" align="right" valign="top">
-   Enter the number exactly how you see it.<br>
-  </td>
-  <td valign="top" width="46">
-   <input type="text" name="checker" size="6">
-  </td>
-  <td width="672" align="left" valign="top">
-   <img src="jpeg.php" border="0" style="border:#000000; border-style:solid; border-width:1px">  </td>
- </tr>
- </table>
-<?php
-  }
-?>
-<br>
-<input type="submit" value="  Submit  ">
-</form>
-</div>
-    <?php
 
-    return(0);
-  }
+  return (0);
+}
 
-function user_signup2() {
+function user_signup2()
+{
   global $db_prefix;
   global $link;
 
-   $r = my_query("select * from " . $db_prefix . "image_verifications where pagename='sign up' and status='y'");
-   if (mysqli_num_rows($r)) {
-     if (md5(md5($_POST['checker'])) != $_SESSION['jpeg_code']) {
-	 include_once("header.php");
+  $r = my_query("select * from " . $db_prefix . "image_verifications where pagename='sign up' and status='y'");
+  if (mysqli_num_rows($r)) {
+    if (md5(md5($_POST['checker'])) != $_SESSION['jpeg_code']) {
+      include_once("header.php");
       error_report(28);
       user_signup();
-      return(28);
-     }
-   }
+      return (28);
+    }
+  }
 
 
-  while (list($key,$value) = each($_POST)) {
+  while (list($key, $value) = each($_POST)) {
     if ("" == $value) {
       include_once("header.php");
       error_report(11);
-	  
+
       user_signup();
-      return(11);
+      return (11);
     }
 
     if (strlen($value) > 35) {
       include_once("header.php");
       error_report(25);
       user_signup();
-      return(25);
+      return (25);
     }
 
     if (("email" == $key) || ("paypal" == $key)) {
       if (valid_email($value)) {
-        $value = str_replace("@","",$value);
-        $value = str_replace(".","",$value);
-      }
-      else {
+        $value = str_replace("@", "", $value);
+        $value = str_replace(".", "", $value);
+      } else {
         include_once("header.php");
         error_report(1);
         user_signup();
-        return(1);
+        return (1);
       }
     }
 
@@ -215,7 +226,7 @@ function user_signup2() {
       error_report(7);
       echo "<br>$value";
       user_signup();
-      return(7);
+      return (7);
     }
 
     if (("username" == $key) && (!preg_match("/^[a-zA-Z0-9]*$/", $value))) {
@@ -223,29 +234,29 @@ function user_signup2() {
       error_report(6);
       echo "<br>$value";
       user_signup();
-      return(6);
+      return (6);
     }
 
     if (("country" == $key) && (!preg_match("/^[a-zA-Z]*$/", $value))) {
       include_once("header.php");
       error_report(22);
       user_signup();
-      return(22);
+      return (22);
     }
 
     if (("username" == $key) && (strlen($value) < 3)) {
       include_once("header.php");
       error_report(5);
       user_signup();
-      return(5);
+      return (5);
     }
-    if (("username" == $key) && (is_numeric(substr($value,0,1)))) {
+    if (("username" == $key) && (is_numeric(substr($value, 0, 1)))) {
       include_once("header.php");
       error_report(4);
       user_signup();
-      return(4);
+      return (4);
     }
-   /* if (("zip" == $key)) {
+    /* if (("zip" == $key)) {
       include_once("header.php");
       error_report(2);
       user_signup();
@@ -269,7 +280,7 @@ function user_signup2() {
     include_once("header.php");
     error_report(12);
     user_signup();
-    return(12);
+    return (12);
   }
 
   $r = my_query("select id from " . $db_prefix . "users
@@ -279,7 +290,7 @@ function user_signup2() {
     include_once("header.php");
     error_report(13);
     user_signup();
-    return(13);
+    return (13);
   }
 
   $r = my_query("select id from " . $db_prefix . "users
@@ -289,7 +300,7 @@ function user_signup2() {
     include_once("header.php");
     error_report(17);
     user_signup();
-    return(17);
+    return (17);
   }
 
   $r = my_query("select id from " . $db_prefix . "users
@@ -299,13 +310,12 @@ function user_signup2() {
     include_once("header.php");
     error_report(18);
     user_signup();
-    return(18);
+    return (18);
   }
 
   if (isset($_SESSION['lt_referrer_id'])) {
     $referrer_id = $_SESSION['lt_referrer_id'];
-  }
-  else {
+  } else {
     $referrer_id = 0;
   }
 
@@ -339,12 +349,12 @@ function user_signup2() {
     '" . ip2long($_SERVER['REMOTE_ADDR']) . "'
     )");
 
-    setcookie("lt_user_id", "$fraud_id", time() + 3600*24*365*100);
+    setcookie("lt_user_id", "$fraud_id", time() + 3600 * 24 * 365 * 100);
 
     include_once("header.php");
     echo "Your account suspended forever";
 
-    return(1);
+    return (1);
   }
 
   $r = my_query("insert into " . $db_prefix . "users(date,username, name, password,
@@ -377,16 +387,16 @@ function user_signup2() {
 
   include_once("header.php");
 
-  ?>
+?>
   <div align="center">
-  Congratulations! You have successfully registered!<br>
-  Click <a href="index.php">here</a> to login
+    Congratulations! You have successfully registered!<br>
+    Click <a href="index.php">here</a> to login
   </div>
-  <?php
+<?php
 
-  return(0);
+  return (0);
 }
 
-  include_once("footer.php");
+include_once("footer.php");
 
 ?>

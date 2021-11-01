@@ -36,4 +36,3 @@ $link = mysqli_connect(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT) or die (
   // Limit for password requests (minutes):
 
   $password_request_limit = 10;
-?>

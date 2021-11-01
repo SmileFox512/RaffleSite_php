@@ -125,5 +125,3 @@ if (isset($_SESSION['lt_user_id'])) {
 if (isset($_GET['r'])) {
   $_SESSION['lt_referrer_id'] = $_GET['r'];
 }
-
-?>

@@ -391,5 +391,3 @@ if (!$r) {
 }
 
 echo "<br>Script installed successfully<br>";
-
-?>
