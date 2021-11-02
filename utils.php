@@ -52,15 +52,14 @@ function valid_email($email) {
   $arr = explode("@",$email);
   $arr2 = explode(".", $email);
 
-  if ((sizeof($arr) != 2) || (sizeof($arr2) != 2)) {
+  if ((sizeof($arr) != 2) || (sizeof($arr2) < 2)) {
     return(false);
   }
 
-  if (strpos($arr[0], ".") === false) {
-    return(true);
-  }
-
-  return(false);
+  // if (strpos($arr[0], ".") === false) {
+  //   return(true);
+  // }
+  return(true);
 }
 
 function check_12hours_limit($lottery_id, $date = 0) {

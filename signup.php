@@ -197,7 +197,6 @@ function user_signup2()
     if ("" == $value) {
       include_once("header.php");
       error_report(11);
-
       user_signup();
       return (11);
     }

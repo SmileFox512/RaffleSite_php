@@ -27,7 +27,7 @@ $r = mysqli_query ($link,
                 gender enum('m','f') not null default 'm',
                 birthdate int not null default '0',
                 signup_date int not null default '0',
-                ip int,
+                ip int(12) unsigned,
                 primary key (id)
                 )");
 
