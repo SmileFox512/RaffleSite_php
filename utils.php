@@ -64,7 +64,7 @@ function valid_email($email) {
 
 function check_12hours_limit($lottery_id, $date = 0) {
   global $db_prefix;
-
+  global $link;
   if (!$date) {
     $date = time();
   }
