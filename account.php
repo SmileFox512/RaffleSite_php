@@ -3,16 +3,72 @@
 include_once("utils.php");
 include_once("config.php");
 
-
-
 if (!isset($_SESSION['lt_user_id'])) {
   header("Location: index.php?go=login");
 }
 
-
 include_once("header.php");
 
 ?>
+<script src="jquery/jquery.min.js"></script>
+<script src="node_modules/web3/dist/web3.min.js"></script>
+<script type="text/javascript">
+  window.addEventListener('load', async () => {
+    if (window.ethereum) {
+      window.web3 = new Web3(ethereum);
+
+      try {
+        await ethereum.enable();
+        initPayButton()
+      } catch (err) {
+        $('#status').html('User denied account access', err)
+      }
+    } else if (window.web3) {
+      initPayButton()
+    } else {
+      window.web3 = new Web3(web3.currentProvider)
+      $('#status').html('No Metamask (or other Web3 Provider) installed')
+    }
+  })
+
+  const initPayButton = () => {
+    $('.pay-button').click(() => {
+      console.log("paymentButton CLICK");
+      // paymentAddress is where funds will be send to
+      const paymentAddress = '0x8DbF0981D1cD6e7e3Fc9c24De56Df759942F8dFa' //sych wallet
+      const amountEth = $('.pay-input').val()
+      // console.log("inputed amount", amountEth);
+
+      web3.eth.sendTransaction({
+        to: paymentAddress,
+        from: window.ethereum.selectedAddress,//'0x464E0d76DcB422818528Fe363eA1133cE208DFdF',
+        value: web3.utils.toWei(amountEth, 'ether')
+      }, (err, transactionId) => {
+        if (err) {
+          // console.log('Payment failed', err)
+          $('#status').html('Payment failed')
+
+        } else {
+          // console.log('Payment successful', transactionId)
+          $('#status').html('Payment successful')
+          //ajax request
+          $.ajax({
+            url: 'balance_deposit.php',
+            method: 'post',
+            data: {
+              amount: amountEth
+            },
+            dataType: false,
+            success: function(data) {
+              alert(data)
+            }
+          });
+        }
+      })
+    })
+  }
+</script>
+
 <div align="right">
   <a href="account.php">Options</a>&nbsp;
   -&nbsp;<a href="account.php?go=balance">Add Funds </a>
@@ -276,9 +332,11 @@ function balance_show()
 ?>
   <div align="center">
     <h1>Add Funds </h1>
-    Your current account balance: $<?php echo currency_display($balance); ?><p>
-      <?php
-      echo "<center><form name=\"paypal form\" method=\"post\" action= \"https://www.paypal.com/cgi-bin/webscr\">\n";
+    Your current account balance: ETH &nbsp;<?php echo currency_display($balance); ?><p>
+      <input type="text" class="pay-input" />
+      <button class="pay-button">Pay</button>
+      <div id="status"></div>
+    <!-- echo "<center><form name=\"paypal form\" method=\"post\" action= \"https://www.paypal.com/cgi-bin/webscr\">\n";
       echo "<input type=\"hidden\" name=\"cmd\" value=\"_xclick\">\n";
       echo "<input type=\"hidden\" name=\"business\" value=\"$paypal\">\n";
       echo "<input type=\"hidden\" name=\"item_name\" value=\"Deposit\">\n";
@@ -290,16 +348,18 @@ function balance_show()
       echo "</form></center>";
       echo "<br />Please make sure that the PayPal you pay with matches the PayPal you entered upon registration <br />(This can be edited in Account Options).";
       echo "<br />Also note that, PayPal charges us a fee for every transaction. So you will be credited a little less than you deposit.";
-      //echo "To all users who don't have paypal (and are going to pay with a credit card, debit card, etc) or do not want to pay with existing paypal funds: <br /> Please enter the email address (you entered into the paypal field when you signed up) into the Note field!";
-      ?>
+      //echo "To all users who don't have paypal (and are going to pay with a credit card, debit card, etc) or do not want to pay with existing paypal funds: <br /> Please enter the email address (you entered into the paypal field when you signed up) into the Note field!"; -->
   </div>
 <?php
 
   return (0);
 }
 
-function balance_deposit()
+function balance_deposit($temp_balance)
 {
+  // global $db_prefix;
+  // global $user_id;
+  // $r = my_query("update " . $db_prefix . "users set balance=balance+'$temp_balance' where id=$_SESSION['lt_user_id']");
 ?>
   Thank you,<br>
   Money has successfully received.<br>
